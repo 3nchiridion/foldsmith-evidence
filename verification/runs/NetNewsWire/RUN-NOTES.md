@@ -1,10 +1,10 @@
 # NetNewsWire run — notes for Foldsmith
 
 For Foldsmith's own team, not for the app's maintainers: how long the run took, what it found wrong in the skill's
-references and detectors, and what the corrections of 2026-10-31 to [REPORT.md](REPORT.md) say about the skill. Moved
-out of REPORT.md on 2026-10-31 (the Timing table and the section "Where the skill's references and the SDK differ"),
-checked against [migration.json](migration.json)'s log and the run's working copy, and completed where the original
-left things out.
+references and detectors, and what the corrections of 2026-10-31 to [REPORT.md](REPORT.md) and the independent review
+of the same day say about the skill. Moved out of REPORT.md on 2026-10-31 (the Timing table and the section "Where the
+skill's references and the SDK differ"), checked against [migration.json](migration.json)'s log and the run's working
+copy, and completed where the original left things out.
 
 ## When things happened
 Local time, from migration.json's log.
@@ -36,7 +36,8 @@ The README's "about 76 of the run's minutes" for captures is the audit and the p
 follow-up's two after passes come on top. Disk use was not recorded for this run. The run's log records no review round
 (Foldsmith's [DEVIATIONS.md](https://github.com/3nchiridion/foldsmith/blob/main/docs/history/DEVIATIONS.md) mentions the
 run's "review" without saying what it covered): the skill's step 6 now asks for a fresh subagent's review of the diff
-and the captures, a requirement written after this run (it cites the Wikipedia run, which came later).
+and the captures, a requirement written after this run (it cites the Wikipedia run, which came later). An independent
+review followed on 2026-10-31 ([below](#what-the-independent-review-of-2026-10-31-says-about-the-skill)).
 
 ## The skill's references against the SDK and the app
 As the run found them on 2026-10-27, with what the skill as published says now.
@@ -80,3 +81,26 @@ As the run found them on 2026-10-27, with what the skill as published says now.
   out of git and out of this repository; a visitor could open none of them.
 - The published copies leave out the simulator's UDID (`<Duo simulator UDID>` in REPORT.md and migration.json, and
   dropped from the log's first line); the working copy's `capture.txt` files, which are not published, still carry it.
+
+## What the independent review of 2026-10-31 says about the skill
+The review ([README.md](README.md), Independent review; [REPORT.md](REPORT.md), Known misses and regressions) confirmed
+15 items, 9 of them regressions, none fixed.
+- The run ended every screen `done` with 9 regressions in the branch. Step 6 as published says a regression is fixed or
+  its change reverted, never left, and asks for a fresh subagent's review of the diff and the captures; this run
+  predates both. Six of the nine come from the feeds follow-up (`2b2e1dc`), which moves two navigation stacks and
+  reaches routes the flow never runs; the review found them by reading those routes (`tools/routes.sh`, which step 6
+  now names) and their call chains, not in a capture.
+- None of the 9 shows in the detector tables. Two show in the after snapshots (Share gone from the upright article pane,
+  Previous and Next behind More) and a third's button does (Show Sidebar became Back), though not what Back does; the
+  rest are in the code only. A `verified` cell can hold a regression: the three upright article cells are `verified`
+  with Share gone. Step 6 now records such a finding with `progress.py issue add --regression`, and asks to open an
+  overflow and count each extra tap as a cost; neither was done here, so what the upright More holds is still unknown.
+- The highest, C-R1: step 5 asks for iOS 27.1 APIs behind `#available`, a runtime check, and the run built only with
+  Xcode 27.1, while the app's CI builds with Xcode 26.6, which cannot compile the 27.x symbols behind those checks.
+  Nothing in the skill as published asks for a build with the toolchain the project's own CI uses, or for compile-time
+  guards when it is older (a search of `SKILL.md` and its references finds neither; not yet changed in Foldsmith).
+- L-L5: the fix (the detail minimum in `viewWillLayoutSubviews`, before `super`) is in the P1 page's UIKit section,
+  written after this run from the catalog. The capture tool launches on the shut phone and opens every inner pose from
+  it (`tools/capture-corpus-flow.sh`), so a launch directly upright is never captured, for this app or another.
+- Nothing new for the skill in L-L3 and L-L7: the T10 detector of Phase 4 step 9 finds Reader View, and the decision
+  table already cites this run's Add Feed as the case to gate.

@@ -1,16 +1,20 @@
 # NetNewsWire on iPhone Duo — migration report
 
-> Edited on 2026-10-31, after the run: [Corrections](#corrections) lists what changed and why. Notes meant for
-> Foldsmith's own team (timing, the skill's references, what the corrections say about the skill) are in
-> [RUN-NOTES.md](RUN-NOTES.md).
+> Edited on 2026-10-31, after the run: [Corrections](#corrections) lists what changed and why, including the independent
+> review recorded under [Known misses and regressions](#known-misses-and-regressions-independent-review-2026-10-31).
+> Notes meant for Foldsmith's own team (timing, the skill's references, what the corrections say about the skill) are
+> in [RUN-NOTES.md](RUN-NOTES.md).
 
 ## At a glance
-- **Status: done for the five screens it captured, one known miss left.** The article's Reader View button stays
-  outside the vertical bar (T10) in 8 cells, as before the change; found after the run, not fixed. Not a pull request
+- **Status: by the run's own checks, done for the five screens it captured; 9 regressions that an independent review
+  confirmed after the run are not fixed.** Two are high: the change does not build with the Xcode 26.6 the project's CI
+  uses, and on the inner display Mark All as Read brings up an empty column and closes the open article
+  ([Known misses and regressions](#known-misses-and-regressions-independent-review-2026-10-31)). Not a pull request
   ([Project rules](#project-rules)).
 - **For an iPhone Duo user:** in book the list and the article each get one half, instead of the article crossing the
   fold; half open or flat upright the list stays beside the article; unfolding from the feeds list keeps it on screen;
   Settings and Add Feed open on the right half in book; on the cover Add Feed's Cancel and Add join the vertical bar.
+  What it costs them is under Known regressions, below.
 - **Coverage:** 5 of 5 screens in the flows; of 35 cells, 19 verified (changed and re-checked; 14 had a finding
   before), 16 fine as is, 0 left. Screens outside the flows were not captured.
 - **Change:** NetNewsWire d9ec7df; five code commits ([commits.txt](commits.txt)); 5 files, +331 −26
@@ -18,15 +22,29 @@
 - **Checked by:** the run's detectors (3 findings before, 0 after) and the run's look at every shot (the other 11
   cells). The published [detectors-before.md](detectors-before.md) and [detectors-after.md](detectors-after.md) are a
   later detector version (Foldsmith's Phase 4 step 5): 21 marks in 15 cells before, none after. The run's log records no
-  review of the change, independent or human (Foldsmith's
+  review of its own (Foldsmith's
   [DEVIATIONS.md](https://github.com/3nchiridion/foldsmith/blob/main/docs/history/DEVIATIONS.md) mentions the run's
-  "review" without saying what it covered). Unit tests not run; no simulator without a fold run
-  ([Not checked](#not-checked)).
-- **Known miss and cost:** Reader View, above. Upright the article pane is 328 pt; Previous Article, Next Article and
-  Share are no longer in its bars, and a More button appears that the run did not open (9 cells).
+  "review" without saying what it covered). After the run, on 2026-10-31, an independent review: a layout reviewer
+  (every shot and snapshot) and a code reviewer (the diff, the source at both revisions, the routes into the touched
+  types), working from the evidence and blind to this report, then a skeptic who checked their items; 24 raised, 15
+  confirmed, 9 refuted or merged
+  ([Known misses and regressions](#known-misses-and-regressions-independent-review-2026-10-31)). Unit tests not run; no
+  simulator without a fold run; no build with the CI's Xcode 26.6 ([Not checked](#not-checked)).
+- **Known regressions** (from the independent review, none fixed; 6 of the 9 come from the feeds commit `2b2e1dc`): the
+  change does not build with the CI's Xcode 26.6 (high); on the inner display Mark All as Read brings up an empty
+  column, which stays until the phone is closed, and closes the article (high); upright, in a 328 pt article pane,
+  Share has left the pane and Previous Article and Next Article are behind a More no capture opened (the M cells under
+  [Screens](#screens)); Back to the feeds closes the open article, and pushes and pops the timeline at once; outside
+  routes (Handoff, Spotlight, Siri, notifications, search) may lose the feed they open (plausible); unfolding drops a
+  Search All; the edge swipe can bring up the empty column (plausible).
+- **Known misses** (not regressions): the article's Reader View button stays outside the vertical bar (T10) in 8 cells,
+  as before the change (found after the run, by the later T10 detector and by the review); a launch directly upright
+  may still show an overlay (plausible); sheets presented outside the root split, such as Add Folder, skip the sheet
+  rule; Add Feed's symbols are not gated on a vertical bar; the "Loading…" page lands on the fold in laptop and tent;
+  minor points of the project's coding guidelines.
 - **Decisions for NetNewsWire's maintainers:** two panes upright; the feeds list on the timeline column's stack (it
-  reaches routes no capture exercised); symbols for Cancel and Add on every iOS 27.1 device
-  ([details](#decisions-for-the-maintainers)).
+  reaches routes no capture exercised, where the review found 6 regressions); symbols for Cancel and Add on every iOS
+  27.1 device; the Xcode the CI uses ([details](#decisions-for-the-maintainers)).
 
 ## Glossary
 | Term | Meaning |
@@ -73,6 +91,13 @@ folder are unchanged.
   altered too (Cancel and Add became symbols there).
 - Timing and the notes on the skill's references moved to RUN-NOTES.md. Added: this summary, the glossary, the project's
   contribution rules, decisions for the maintainers and a list of what was not checked.
+- 2026-10-31: added the independent review
+  ([Known misses and regressions](#known-misses-and-regressions-independent-review-2026-10-31); At a glance; references
+  to it in Project rules, Screens, What changed, Decisions, Not checked and Left to do). The status said one known miss
+  was left; it now gives the review's 9 regressions and 6 misses. "The run's log records no review of the change,
+  independent or human" now says the run's log records no review of its own, and that one followed. "Back returns to
+  the feeds" now adds that, by the code, Back also deselects the feed and closes the open article. Decision 5 (the
+  Xcode the CI uses) is new.
 
 ## Project rules
 NetNewsWire's `CONTRIBUTING.md` asks contributors to ask first, with a ticket and a topic on the project's forum,
@@ -80,7 +105,10 @@ before working on a change, and says a pull request opened without that is ignor
 note any LLM use, that its author review every line, and that it add no warnings. This report is not a PR, and nothing
 was sent to the project. The code was written by a Claude Code agent with the Foldsmith skill: six of the branch's seven
 commits carry a `Co-Authored-By` line naming the model; the feeds commit `2b2e1dc` has no message body. The run's log
-records no warning count.
+records no warning count. The independent review found the change short of these rules: it does not build with the
+Xcode 26.6 the project's CI selects, against `CONTRIBUTING.md`'s "merge cleanly" and `Technotes/CodingGuidelines.md`'s
+"No code that triggers compiler errors" ([review](#known-misses-and-regressions-independent-review-2026-10-31), 1), and
+it misses minor points of the coding guidelines (15).
 
 ## Screens
 Cell states from [migration.json](migration.json); the R and M marks from the after snapshots.
@@ -98,7 +126,8 @@ Cell states from [migration.json](migration.json); the R and M marks from the af
 - **R**: the article's Reader View button sits outside the vertical bar (T10), before and after alike. Not fixed.
 - **M**: two panes upright: the article pane is 328 pt wide, and Previous Article, Next Article and Share are no longer
   in its bars (in the feeds and timeline cells no article is open, so they were disabled before as well); its navigation
-  bar shows a More button, which the run did not open.
+  bar shows a More button, which the run did not open. The independent review confirmed both as regressions
+  ([review](#known-misses-and-regressions-independent-review-2026-10-31), 3 and 9).
 - **ᵃ**: the later detectors also mark T10 on Add Feed here before the change, which the run's audit missed; after the
   change Cancel and Add are symbols and detectors-after.md is clean here.
 - **ᵇ**: "fine as is" in migration.json, although the change altered the cell: Cancel and Add became 40 × 40 pt symbols
@@ -156,11 +185,13 @@ One commit per screen, then the feeds follow-up. Line numbers point into [NetNew
   project's owner chose, for three levels: unfolded from the feeds list, the two panes are the feeds list and the
   article. While the split is expanded on a display with a fold, the feeds list moves onto the timeline column's
   navigation stack and the primary column's stack holds an empty controller; a picked feed pushes the timeline onto that
-  stack and Back returns to the feeds (lines 361–438). A triple-column split pairs only the timeline with the article in
-  its two-pane mode, and a zero-width timeline column fails a UIKit assertion, hence the stack move. The stacks go back
-  in `splitViewController(_:topColumnForCollapsingToProposedTopColumn:)`, which then answers from the app's state (lines
-  463–471); `showColumn` (lines 242–246), `navigationController(_:didShow:)` (lines 499–507) and the saved display mode
-  (lines 478–485) have new branches for it.
+  stack and Back returns to the feeds (lines 361–438); by the code, Back also deselects the feed and closes the open
+  article ([review](#known-misses-and-regressions-independent-review-2026-10-31), 4). A triple-column split pairs only
+  the timeline with the article in its two-pane mode, and a zero-width timeline column fails a UIKit assertion, hence
+  the stack move. The stacks go back in `splitViewController(_:topColumnForCollapsingToProposedTopColumn:)`, which then
+  answers from the app's state (lines 463–471); `showColumn` (lines 242–246), `navigationController(_:didShow:)` (lines
+  499–507) and the saved display mode (lines 478–485) have new branches for it. Six of the independent review's nine
+  regressions come from this commit (2, 4–7, 10).
 - Tried and reverted (by the run's account; none was committed): bringing the feeds list up with `show(.primary)`, which
   showed it as an overlay over a dimmed timeline and article; moving the controllers between columns with
   `setViewController(_:for:)`, which popped the cover to the feeds list at its next rotation; hooking
@@ -192,38 +223,224 @@ was run (this run could use only the Duo simulator).
 1. **Two panes upright** (`67b5cc7`, the 320 pt `minimumSecondaryColumnWidth`). Laptop, tent and flat-upright show the
    list (0–340) beside a 328 pt article; Previous Article, Next Article and Share leave the article's bars. Without the
    minimum the article is alone there at 669 pt, as before (the run's probe after the column-width change), and
-   unfolding from the timeline upright hides the list again.
+   unfolding from the timeline upright hides the list again. The independent review confirmed both costs as
+   regressions ([review](#known-misses-and-regressions-independent-review-2026-10-31), 3 and 9): Share has no node in
+   the upright article pane, and Previous and Next are behind a More no capture opened, with no `visibilityPriority` to
+   choose what stays. It also found the minimum set too late for a launch directly upright (8, plausible).
 2. **The feeds list on the timeline column's stack** (`2b2e1dc`). Review this first. It changes two navigation stacks
    under the split while it is expanded on the inner display, and it reaches routes no capture exercised: state
    restoration, keyboard commands and other callers of `showColumn`, and `SceneCoordinator.handle(_:)` for user
    activities and notification responses. Without the commit, feeds keeps the first run's result: T7 in the five inner
-   poses, the feeds list one tap away behind the sidebar button.
+   poses, the feeds list one tap away behind the sidebar button. The independent review read these routes
+   ([review](#known-misses-and-regressions-independent-review-2026-10-31)). By the code, state restoration, widget deep
+   links and notifications through `restoreFeedSelection` work; Mark All as Read (2), Back to the feeds (4, 5), Handoff,
+   Spotlight, Siri, notifications that fall back to `discloseFeed` and search (6), a Search All on unfold (7) and the
+   edge swipe (10) do not.
 3. **Symbols for Add Feed's Cancel and Add on every iOS 27.1 device** (`2b5f2a9`), iPhone and iPad included. The
    alternatives are the words, which stay in a horizontal bar on the cover (T10), or symbols only where the bar is
-   vertical; the skill's step 5, as published now, asks for that gating, which this change predates.
+   vertical; the skill's step 5, as published now, asks for that gating, which this change predates (review, 13).
 4. **Reader View** (`ArticleViewController.swift:144`, `UIBarButtonItem(customView:)`): not fixed. Either
    `axisBehavior = .verticalPreferred` on that item (iOS 27.1) or a title + symbol item would let it join the vertical
-   bar; neither was tried.
+   bar; neither was tried (review, 11).
+5. **The Xcode the project's CI uses** (`67b5cc7`, `936019c`). The change calls iOS 27.0 and 27.1 SDK symbols behind
+   runtime `#available` checks only, so the CI's Xcode 26.6 cannot build it (review, 1). Either guard them at compile
+   time or move CI to Xcode 27.1 in the same change.
 
 ## Not checked
 - The app's unit tests (`./buildscripts/build_and_test.sh`, as the app's `CLAUDE.md` gives it). Build warnings were not
-  counted.
+  counted. Nor was the change built with the Xcode 26.6 the project's CI selects; by the SDK headers it cannot compile
+  there ([review](#known-misses-and-regressions-independent-review-2026-10-31), 1).
 - Any simulator without a fold (iPhone, iPad); the Mac app was not built.
 - Taps on the inner display: the captures reach each screen with taps on the shut phone and then unfold it, so picking
-  a feed in the list pane, Back to the feeds and the More button were never exercised.
+  a feed in the list pane, Back to the feeds and the More button were never exercised. The independent review read Back
+  and Mark All as Read from the code (2, 4, 5); what More holds is still unknown (3, 9).
 - Launching with the phone already open: every capture launched on the cover. The P1 page's UIKit section, published
   after the run, warns that a detail minimum set in `viewDidLayoutSubviews` (as here, through `updateForFold`) left the
-  catalog's split as an overlay on first launch in laptop.
+  catalog's split as an overlay on first launch in laptop. The independent review found that order in this code
+  (8, plausible).
 - State restoration: the flow starts every launch at the feeds list (`-selectedSidebarItem {} -selectedArticle {}` in
-  [NetNewsWire.flow](NetNewsWire.flow)), so reopening the last feed and article was not exercised.
+  [NetNewsWire.flow](NetNewsWire.flow)), so reopening the last feed and article was not exercised. By the independent
+  review's reading of the code, restoration selects before the first layout, so the list pane gets the feeds and the
+  timeline.
 - Sheets and screens outside the flows: Add Folder, the feed and account inspectors, Current Activity, article search,
   the full-screen image. The skill's T10 static scan, as published now, also lists bar items in Account Setup,
-  Current Activity, Activity Log and Error Log on the unmodified source.
+  Current Activity, Activity Log and Error Log on the unmodified source. By the code, Add Folder and the sheets Settings
+  presents itself skip the sheet rule (review, 12).
 - Split View's half window (475 × 669 pt): not drivable headless.
 - The detector rerun's figure of 26 findings (README): the list behind it is not published; only the table's 21 marks
   in 15 cells can be checked here.
 
+## Known misses and regressions (independent review, 2026-10-31)
+Three Claude Code agents with no part in the run reviewed the branch from the evidence and the source: a layout reviewer
+(every before and after shot, every accessibility snapshot measured) and a code reviewer (the diff without `.duo/`, the
+source at both revisions, the routes `tools/routes.sh` lists into the touched types), neither of whom read this report,
+[audit.md](audit.md) or [migration.json](migration.json); then a skeptic, who checked each of their items against the
+frames, the lines, the shots, the iOS 27.1 SDK headers and Foldsmith's rules. They raised 24 items: 15 stand, 9 of them
+regressions (2 high, 5 medium, 2 low) and 6 not (1 medium, 5 low); 5 repeated one of the 15 and were merged into it; 4
+were refuted. [README.md](README.md) lists what they found right and what was refuted. The review's ids are in
+parentheses. Lines are in the source at `duo-migration` (base `20a90a6` is `duo-baseline`), not in
+[NetNewsWire.patch](NetNewsWire.patch) as in the rest of this report; `before/` and `after/` are the snapshots and shots
+in the run's working copy (path pattern under [Screens](#screens)). None of the 15 is fixed.
+
+1. **The change does not build with the project's CI toolchain (C-R1; high; regression).** The "iOS Simulator Tests"
+   job (`.github/workflows/ci.yml:75-110`) selects Xcode 26.6. The new code calls iOS 27 SDK symbols:
+   `UIView.reservedRegions(kind:options:)` (iOS 27.1, `UIViewReservedRegion.h:18`) at `iOS/FoldAlignedSplit.swift:27`
+   and `:35`; `UISheetPresentationController.preferredPlacement` and `.Placement` (iOS 27.0,
+   `UISheetPresentationController.h:40`, `:120`) at `:43`, `:52`, `:55`, `:57`; `UIHingeInteraction` (iOS 27.1,
+   `UIHingeInteraction.h:51`) at `iOS/RootSplitViewController.swift:38`. Only the runtime `#available` guards them;
+   nothing guards them at compile time, so the 26.6 SDK cannot build the iOS target. The base built with 26.6, and the
+   diff touches neither `ci.yml` nor `project.pbxproj`. This breaks `CONTRIBUTING.md` ("merge cleanly", "add no
+   warnings") and `Technotes/CodingGuidelines.md:149` ("No code that triggers compiler errors"). Read from the CI file
+   and the SDK headers, not from a build. Fix: guard at compile time, or move CI to Xcode 27.1 in the same change
+   (decision 5).
+2. **Mark All as Read brings up an empty column and closes the article (C-R2; high; regression).** Book, laptop, tent,
+   flat-sideways and flat-upright (feeds, timeline, article). `markAsReadAndShowSidebar` still sets
+   `preferredDisplayMode = .twoBesideSecondary` and calls `showColumn(.primary, bypassDisplayModeRestriction: true)`
+   (`iOS/SceneCoordinator.swift:1536-1541`). While the feeds list sits in the list pane, the primary column's stack
+   holds only `emptyPrimaryViewController` (`:886`, `:907`), so an empty column appears beside the list pane and the
+   article in book and flat-sideways, or over them upright, where three columns do not fit. It stays until the phone is
+   closed: `.oneBesideSecondary` and `displayModeButtonVisibility = .never` are set only at `:909-910`, and
+   `updateSidebarBesideArticle` returns early while `isSidebarBesideArticle` is true (`:894`). The same call pops the
+   list pane to the feeds list (`showInSidebarBesideArticle`), whose `didShow` deselects the feed and the open article
+   (`:1969-1971`). Before, the same call showed the feeds sidebar. Triggers: the timeline toolbar's Mark All as Read
+   (`MainTimelineViewController.swift:501`), ⌘K in the timeline (`:514`) and in the feeds
+   (`MainFeedCollectionViewController.swift:634`), and mark all as read and go to the next unread
+   (`RootSplitViewController.swift:144`). The button is on screen beside the article in every inner pose:
+   `after/article-book.json` node 146 at (25, 602), `after/article-laptop.json` node 161 at (25, 884). Read from the
+   code; no capture runs it.
+3. **Upright, Share has left the article pane (L-L2; medium; regression).** Laptop, tent and flat-upright, article: no
+   node for Share in `after/article-laptop.json`, `after/article-tent.json` or `after/article-flat-upright.json`.
+   Before, it was enabled at x 603.3–644.0, y 884–922, beside Reader View at x 545.3–589.3 (`before/article-laptop.json`
+   node 103; tent node 86; flat-upright node 115). After, the bottom bar ends with Reader View at x 600–644
+   (`after/article-laptop.json` node 190), with no overflow of its own; the shot `after/article-laptop-inner.png` shows
+   only ○ ☆ ⌄ and Reader View under the article. The items come from `Main.storyboard` (Share `9Ut-5B-JKP`), with
+   Reader View inserted at index 5 (`iOS/Article/ArticleViewController.swift:146-147`), and the diff sets no
+   `visibilityPriority`. Whether Share went into the top More is unverified: no capture opens it. The timeline row's
+   context menu still offers Share (`MainTimelineViewController.swift:602`).
+4. **Back to the feeds closes the open article (L-L4; medium; regression).** Book, laptop, tent, flat-sideways and
+   flat-upright, timeline or article: the timeline's Show Sidebar button became a Back button, "Feeds"
+   (`before/article-book.json` node 10, Show Sidebar, x 24–64; `after/article-book.json` node 10, a BackButton, x
+   20–68, and the same in `after/article-{laptop,tent,flat-sideways,flat-upright}.json`). Going Back deselects the feed
+   and closes the open article, so the detail pane empties to "No selection": `didShow` of the feeds list while
+   `isSidebarBesideArticle` is true calls `selectFeed(nil, …)` (`iOS/SceneCoordinator.swift:1969-1971`), which
+   deselects the article (`:1248-1250`) and sets `articleViewController.article = nil` (`:1321-1324`). Getting it back
+   takes a feed and an article picked again. Before, Show Sidebar changed only the display mode and kept the timeline
+   and the article. Read from the code; no capture taps Back.
+5. **Back pushes and pops the timeline in one turn (C-R3; medium; regression).** The same poses, with an article open:
+   going Back from the timeline to the feeds list pushes the timeline back and pops it again in the same run-loop turn.
+   The new `didShow` branch (`iOS/SceneCoordinator.swift:1969-1971`) calls `selectFeed(nil)`; `selectSidebarItem` runs
+   `selectArticle(nil)` (`:1248-1250`), which, with an article open, calls `showColumn(.supplementary)` (`:1321-1324`)
+   → `RootSplitViewController.swift:75-77` → `showInSidebarBesideArticle`, which pushes the timeline, animated, since
+   the pop just removed it (`SceneCoordinator.swift:944-946`). Then `setTimelineFeed(nil)` completes synchronously
+   (`fetchAndReplaceArticlesAsync`, `:2674-2676`) and calls `showColumn(.primary)` (`:1271`), which runs
+   `popToViewController(feeds, animated: true)` (`:940-942`) while that push is starting. At least a flicker; UIKit may
+   refuse the second transition and leave the person on an empty timeline, or log a corrupted navigation bar. The
+   keyboard route `navigateToFeeds` (`MainTimelineViewController.swift:460`) reaches the same branch. In the base,
+   collapsed, the article was already closed by then, so this did not happen. Read from the call chain; not captured.
+6. **Outside routes may lose the feed they open (C-R4; medium; regression; plausible).** The same poses, with a feed
+   already open in the list pane: outside routes deselect, which pops the list pane to the feeds list, animated
+   (`iOS/SceneCoordinator.swift:1271` → `:940-942`), and then select a feed at once, which pushes the timeline in the
+   same turn. `discloseFeed` waits 1 s before selecting again only in compact width (`:1669-1673`), where the base had
+   a navigation stack; at regular width, now a navigation stack too, it selects at once. The new `didShow` branch
+   deselects whenever the feeds list appears (`:1969`), and its `!isTimelineViewControllerPending` guard never applies:
+   the flag is never set to true (declared `:97`; read `:1969`, `:1979`; reset to false only at
+   `MainTimelineViewController.swift:255`). So a push that UIKit refuses mid-pop, or a `didShow` of the feeds list that
+   arrives after the new selection, can drop or clear the feed and article the route opened. Routes: Handoff, Spotlight
+   and Siri activities (`handle(_:)` → `selectSidebarItem(indexPath: nil)`, `:492`; `SceneDelegate.swift:72`, `:84`),
+   notification taps that fall back to `discloseFeed` (`SceneDelegate.swift:106`), and ⌘F and the Search quick action
+   (`showSearch`, `:528-535`; `SceneDelegate.swift:225`). It depends on UIKit's timing, and the flow runs none of these
+   routes on the inner display.
+7. **Unfolding drops a Search All (C-R5; medium; regression).** From closed or closed-sideways into any inner pose
+   (T7). `showSearch`, reached by ⌘F (`iOS/RootSplitViewController.swift:186-188`) or the Search home-screen quick
+   action (`iOS/SceneDelegate.swift:224-225`), calls `selectSidebarItem(indexPath: nil)`
+   (`iOS/SceneCoordinator.swift:528-535`), so `currentFeedIndexPath` stays nil (`:1245`) while the results show in the
+   timeline's search controller (`MainTimelineViewController.swift:389-393`). On unfold, `updateSidebarBesideArticle`
+   puts only the feeds list on the list stack (`SceneCoordinator.swift:908`), which takes the timeline, with its search
+   and results, out of the window. The coordinator keeps `isSearching` and the search's smart feed (`:1347-1353`,
+   `:1384-1388`), but nothing shows them, and an article opened from the results stays in the detail pane with no list
+   to return to. Before, the timeline kept its column on unfold (`before/timeline-book.json`: the "All Unread" bar at
+   x 0–320 beside the detail at 321–951). Searching from the timeline's own field keeps the feed selected and is not
+   affected. Read from the code; not captured.
+8. **A launch directly upright may still show an overlay (L-L5; medium; not a regression; plausible).** Laptop, tent
+   and flat-upright, on a cold launch or a scene reconnection on the inner display: the 320 pt
+   `minimumSecondaryColumnWidth` that makes the split tile two panes upright is set only after the split's first layout
+   pass. `iOS/RootSplitViewController.swift:45-48` runs `updateForFold()` after `super.viewDidLayoutSubviews()`;
+   `iOS/SceneCoordinator.swift:847` sets the minimum only from `splitViewFoldDidChange`, and `init` applies the widths
+   for no fold first (`:361`, `:852-853`). Foldsmith's P1 page (`references/patterns/fold-aligned-split.md`, § UIKit,
+   "Two panes upright") asks for it in `viewWillLayoutSubviews`, before `super`, when the split exists in every pose;
+   set later, the catalog's split stayed an overlay on 5 of 5 first launches in laptop. The later
+   `preferredDisplayMode = .oneBesideSecondary` (`:910`) may rescue it. Every capture launched on the shut phone and
+   opened the inner poses from it ([NetNewsWire.flow](NetNewsWire.flow); the skill's `tools/capture-corpus-flow.sh`), so
+   this path is untested. Not worse than before, which showed the detail alone upright (`before/article-laptop.json`
+   node 9, a bar at x 0–669).
+9. **Upright, Previous Article and Next Article are behind More (L-L1; low; regression).** Laptop, tent and
+   flat-upright, article: the detail pane is 328 pt wide (navigation bar x 341–669, was 0–669), and Previous Article and
+   Next Article have left its top bar (before at x 425–465 and 481–521, `before/article-laptop.json` nodes 12–13). In
+   their place a system overflow, More (`TopOverflowBarButtonItem`, x 481–521, y 28–68), sits beside "enter full
+   screen" (x 365–405): `after/article-laptop.json` nodes 195–197, the same in `after/article-tent.json` and
+   `after/article-flat-upright.json`; the shot `after/article-laptop-inner.png` shows only ⤢ and ••• in the right pane's
+   bar. Each now takes an extra tap, and no capture opens More to show they are in it; the diff sets no
+   `visibilityPriority` to choose what stays. More also appears in feeds and timeline (`after/feeds-laptop.json` node
+   196, `after/timeline-laptop.json` node 199), where both buttons were disabled before. Low, lowered from medium: the
+   timeline is now beside the article, so the next or previous article is one tap on its row, and Next Unread stays in
+   the bottom bar.
+10. **The edge swipe can bring up the empty column (C-R8; low; regression; plausible).** The same inner poses, list
+    pane at the feeds level: the split's edge-swipe gesture is still on (`iOS/SceneDelegate.swift:25`,
+    `presentsWithGesture = true`, unchanged) while the primary column holds only an empty controller
+    (`iOS/SceneCoordinator.swift:886`, `:907`); the change hides only the display-mode button (`:909`,
+    `displayModeButtonVisibility = .never`). At the feeds level the list stack has no pop gesture to take the swipe, so
+    one from the leading edge can bring up the empty column of item 2, where before it showed the feeds sidebar. Low:
+    an overlay can be dismissed. No capture exercises it.
+11. **Reader View outside the vertical bar (L-L3; low; not a regression).** The article closed and closed-sideways, and
+    article, feeds and timeline in book and flat-sideways: 8 cells (T10, the R marks under [Screens](#screens)). The
+    change left it as it was. `after/article-closed.json` node 98 at x 333–377, y 608–652, while the bar's items are at
+    x 399–437 (Share, node 104); `after/article-closed-sideways.json` node 97 at x 609–653, y 396–440, in the trailing
+    bottom corner, while the bar is on the leading edge at x 29–67; `after/article-book.json` node 161,
+    `after/feeds-book.json` node 167 and `after/timeline-flat-sideways.json` node 162 at x 818–862, y 599–643, while the
+    bar's items are at x 884–922. Before, the same (book x 798–842). The item is made at
+    `iOS/Article/ArticleViewController.swift:143-147` as `UIBarButtonItem(customView:)` with no `axisBehavior =
+    .verticalPreferred`, the local fix the decision table names (decision 4). Low: it works and can be reached, only
+    misplaced.
+12. **Sheets presented off the root split skip the sheet rule (L-L6; low; not a regression; plausible).** Book: Add
+    Folder is presented by the feeds list (`iOS/SceneCoordinator.swift:1764-1768`,
+    `mainFeedCollectionViewController.present` with `.formSheet`); Settings presents its import and export document
+    pickers (`.formSheet`) and Safari (`.pageSheet`) on itself (`iOS/Settings/SettingsViewController.swift:582`, `:634`,
+    `:658`). UIKit does not route a child's `present` through the root's override, so the placement is set before
+    presentation only in that override (`iOS/RootSplitViewController.swift:50-53`) and corrected only on the root's
+    next layout (`:64`, `updateSheetPlacement`), which presenting a form sheet need not cause. These sheets likely still
+    open on the leading half over the list pane (T15), where automatic placement put Settings before
+    (`before/settings-book.json` node 4, x 8–467.5). No flow line reaches them. Low: they are rarely opened.
+13. **Add Feed's symbols are not gated on a vertical bar (L-L7; low; not a regression).** On every iOS 27.1 device,
+    including the Duo in laptop, tent, flat-upright and flat-sideways, where the sheet's bar stays horizontal, Cancel
+    and Add became icon-only ✕ and ✓, gated only on `#available(iOS 27.1, *)` (`iOS/Add/AddFeedView.swift:87-111`,
+    `Button(title, systemImage: "xmark"/"checkmark")`) rather than on the window having a vertical bar. The decision
+    table's "Local and structural changes" names this case and asks for the gate (decision 3).
+    `before/add-feed-laptop.json`: Cancel x 124.5–201.2 and Add 488.5–544.5 (words); `after/add-feed-laptop.json`:
+    Cancel 124.5–164.5 and Add 504.5–544.5 (40 × 40 glyphs); tent and flat-upright the same; flat-sideways Cancel
+    265.5–342.2 → 265.5–305.5. Where the bar is vertical (closed, closed-sideways, book: Cancel and Add at x 883.8–921.8
+    in `after/add-feed-book.json`) the change is right. Low: the titles stay their accessibility labels and the buttons
+    work.
+14. **"Loading…" still lands on the fold (C-R12; low; not a regression).** Laptop and tent, article pane: only the empty
+    "No selection" page got the placeholder moved up. The "Loading…" page shown while Reader View extracts an article
+    still uses `.systemMessage { top: 45% }` and briefly sits on the horizontal fold (T1).
+    `iOS/Article/WebViewController.swift:688-689` renders `loadingHTML` unmodified (`<h3 class="systemMessage">`,
+    `Shared/Article Rendering/ArticleRenderer.swift:192-195`), and only the `noSelection` branch adds
+    `FoldAlignedSplit.placeholderStyle` (`:700-706`). Placement: `Shared/Article Rendering/stylesheet.css:28-32`; the
+    same 45 % put "No selection" at y 444–469 in `before/feeds-laptop.json`, across the fold at 455.5–495.5. Transient,
+    and as before.
+15. **Contribution-rule nits (C-R13; low; not a regression).** Every commit subject starts "Duo: …" rather than with a
+    present-tense verb (`Technotes/CodingGuidelines.md:167`). New stored properties sit mid-file
+    (`iOS/SceneCoordinator.swift:883-889`; `iOS/RootSplitViewController.swift:32`), against "Properties go at the top"
+    (`:49`). `updateSidebarBesideArticle` (`SceneCoordinator.swift:893`) and `restoreThreeColumns` (`:914`) are
+    internal though only `SceneCoordinator.swift` uses them (`:43` asks for private as often as possible). The new
+    `iOS/FoldAlignedSplit.swift` header (lines 1–16) has no Created by or Copyright line and refers to an outside
+    "duo-patterns" project. Commit `2b2e1dc`, unlike the other six, has no LLM note; `CONTRIBUTING.md:25` asks for one
+    per pull request, so this matters only if that commit goes alone ([Project rules](#project-rules)).
+
 ## Left to do
+- The independent review's regressions (1–7, 9, 10 under
+  [Known misses and regressions](#known-misses-and-regressions-independent-review-2026-10-31)), the CI build (1) and
+  Mark All as Read (2) first, and its other misses (8, 12–15; 11 is the Reader View button).
 - The Reader View button (decision 4).
 - Capture the sheets and screens listed under Not checked. The inspectors and Current Activity are presented through
   the root split, so they get the sheet rule in code; none was captured. Add Folder (`AddFolderView.swift:59-78`) has

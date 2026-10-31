@@ -80,4 +80,12 @@ Disk use was not recorded in this run.
 
 The run's own look at every after shot, the detectors, and, before the after capture, a logging build and probes whose
 output was not kept (log lines at 09:21 and 09:24 in [migration.json](migration.json)). The skill had no independent
-review step then, and none ran.
+review step then, and none ran during the run.
+
+An independent review followed on 2026-10-31 ([README.md](README.md), Independent review; [REPORT.md](REPORT.md), Known
+misses): 7 items confirmed, none a regression. Two bear on the skill. The decision table's exception for a local change
+that runs on every device (`references/decision-table.md`, Local) cites this run's logged-out tabs, made plain `Tab`s
+"as on iPhone", as putting the app on "the path it already takes on iPhone"; at the base a logged-out iPhone used the
+same sidebar-only section, and by the code the change swaps the two tabs on every logged-out iPhone's bar, so the
+example does not hold (not yet changed in Foldsmith). And 8 cells the run recorded `unchanged` did change, the tab swap
+on the cover: the cell states record findings, not changes.
