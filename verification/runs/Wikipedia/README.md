@@ -1,8 +1,8 @@
 # Wikipedia, migrated hands-free and then reviewed (2026-10-28)
 
-The third run of the hands-free skill (`skills/foldsmith-duo/SKILL.md`), and the first on a UIKit and
-Objective-C app whose articles are a web view. The agent got the `/duo-start` (now `/foldsmith-start`) prompt and nothing else about the work:
-a fresh Claude Code subagent with the skill, on the project's iPhone Duo simulator (iOS 27.1, Xcode 27.1), since
+The third run of the hands-free skill (`skills/foldsmith-duo/SKILL.md`), and the first on a UIKit and Objective-C app
+whose articles are a web view. The agent got the `/duo-start` (now `/foldsmith-start`) prompt and nothing else about the
+work: a fresh Claude Code subagent with the skill, on the project's iPhone Duo simulator (iOS 27.1, Xcode 27.1), since
 headless `claude -p` was still signed out. The prompt added this machine's facts (Xcode, `duo.py`, the tap runner), the
 app's own build facts (ad-hoc signing for its app-group container, the xcconfig its setup script writes), no sign-in to
 Wikipedia, and the project's limits (no simulator changes, no push, no edits to this repository). The app was
@@ -12,20 +12,24 @@ work on `duo-migration` there.
 Unlike the first two runs, this one did not pass review. The run's own check, and each round of fixes after it, passed
 defects that a fresh reviewer then found. After four rounds of fixes the last review still confirmed 15, two of them
 medium regressions; the owner asked to finish there, so they are listed below, not fixed. What follows says what each
-round found.
+round found. `REPORT.md` was corrected and restructured on 2026-10-31 to give the same picture (its "Corrections" says
+what changed; the run's own text is in git history).
 
 | File | What it is |
 |---|---|
-| `REPORT.md` | the skill's report: per screen the pattern, what changed, the bars per pose, costs, existing behaviour, what is left and why, each review round item by item, and "Skill problems" |
+| `REPORT.md` | the report for the app's maintainers: status at a glance, the known regressions with where to start in the code, every cell's state, decisions left to them, what is left and why, what changed, effects on devices without a fold, the bars per pose, costs, how it was checked and what was not |
+| `RUN-NOTES.md` | for Foldsmith's own team: the capture record, each review round item by item, "Skill problems" (which `audit.md` points to as the report's), time and disk |
 | `audit.md` | the audit of the unmodified app and the classification of each screen |
 | `migration.json` | the progress file at the end (what the Foldsmith pane reads) |
 | `Wikipedia.flow` | the eleven screens the skill found and the taps that reach them, logged out |
-| `detectors-before.md`, `detectors-after.md` | `duo-detect` as of Phase 4 step 9 on the 77 snapshots before and after |
+| `detectors-before.md`, `detectors-after.md` | `duo-detect` as of Phase 4 step 9 (synced into the run in its third round, rerun in the fourth) on the 77 snapshots before and after |
 | `Wikipedia.patch` | the code change, `main..duo-migration` without `.duo/`; MIT, as wikipedia-ios is |
 | `LICENSE-MIT-Wikimedia` | the license of the patch: wikipedia-ios's `LICENSE.txt` at 2031b89, unchanged |
 | `commits.txt` | the run's 28 commits |
 
-The shots stay outside this repository, as for every run.
+The shots stay outside this repository, as for every run: in the run's working copy they are
+`.duo/captures/Wikipedia/{before,after}/<screen>-<pose>-{cover,inner}.png`, each with its accessibility snapshot, and
+`migration.json` names every cell's pair.
 
 ## Result
 Eleven screens, logged out. Two are done: community (Explore, an Even grid, 418 → 366 pt columns off the fold) and the
@@ -40,69 +44,75 @@ review found regressions in paths no capture reaches ("Last check"):
   a web view is not built).
 - **settings**: split in the second round, broken in ways the captures could not show, reverted in the third; its rows
   still cross the fold (T5).
-- **places** (a map, no pattern), **for-you** (shares Home's stack with community's grid), **profile** (the Account
-  sheet's text crosses the inactive fold flat sideways, as before; in book it now sits on the trailing half).
+- **places** (a map; the skill had no rule for maps then), **for-you** (shares Home's stack with community's grid),
+  **profile** (the Account sheet's text crosses the inactive fold flat sideways, as before; in book it now sits on the
+  trailing half).
 
-`duo-detect`, the detectors as of Phase 4 step 9, over the run's snapshots: 23 cells with a finding before (44 lines), 16 after (17
-lines). Of the 16: the list's search field (T14, 6 cells), contents' T7 in the inner poses (5, the cover's overlay has
-a Close button the inline contents do not need: a presentation change, not counted), For You and Settings (T5, 4),
-Places (1). The run's own second-round table came from older copies of the detectors (the coordinator had not resynced
-the skill after the first review's fixes); it reran them in the third round.
+`duo-detect`, the detectors as of Phase 4 step 9, over the run's snapshots: 23 cells with a finding before (44 lines),
+16 after (17 lines). Of the 16: the list's search field (T14, 6 cells), contents' T7 in the inner poses (5, the cover's
+overlay has a Close button the inline contents do not need: a presentation change, not counted, nor recorded as a
+waiver), For You and Settings (T5, 4), Places (1). The run's own second-round table came from older copies of the
+detectors (the coordinator had not resynced the skill after the first review's fixes); it reran them in the third round.
 
-About 7 h 45 min of the agent's work over 8 h 40 min: the run 3 h 5 min, then four rounds of 1 h 10 min, 1 h 50 min,
+About 7 h 35 min of the agent's work over 8 h 40 min: the run 3 h 5 min, then four rounds of 1 h 10 min, 1 h 50 min,
 45 min and 45 min. Free disk went from 12 GB to 2.1 GB.
 
 ## What each round found
-| Round | Found by | What it found (the report's "Found in review" has every item) |
+| Round | Found by | What it found (`RUN-NOTES.md` has every item) |
 |---|---|---|
-| the run | the run's own check | seven of eleven screens verified in every pose, settings needing nothing, three in `todo`; 21 cells → 10 by the detectors of that time; it read contact sheets |
+| the run | the run's own check | seven of eleven screens called verified in every pose, settings needing nothing, three in `todo`; 21 cells → 10 by the detectors of that time; it read contact sheets |
 | first | the coordinator, from the shots | 2 defects passed as clean: the contents in a 372 pt pane breaking words and pushing the article past its edge (a regression), and the lists stopping 84 pt short of the fold |
 | second | an independent review (three reviewers by screen group, a skeptic per finding) | 10 items: search results 84 pt short, the W dead in the detail pane, the contents overlay covering the list and blurring the article, actions behind the system overflow, Settings across the fold, a card ending below its cell, and others; six report claims the evidence contradicted |
 | third | an independent review (four reviewers, a skeptic each) | 22 items, among them state restoration and Settings' theme broken on every iOS 27.1 device by the container, Settings sub-pages replacing each other with no Back, stale contents beside a new article, VoiceOver reaching the list under the contents, the tab bar carried into other tabs |
 | fourth | an independent review (four reviewers, a skeptic each) | 23 items: routes from the detail pane (Talk page, links, notifications) opening in the list pane, three more walks of the hierarchy reading the list, the themes button's VoiceOver label and the open-contents fill lost on every iOS 27.1 device, Edit missing from the disabled overflow, open contents no longer carrying over |
 | after the fourth | an independent review of round four (two reviewers, a skeptic each) | see "Last check" below |
 
-Through the fourth round every confirmed regression was fixed or its change reverted (Settings' split); the agent was
-told each time that a regression never goes to `todo`.
+Through the fourth round every confirmed regression got a fix or its change was reverted (Settings' split); the agent
+was told each time that a regression never goes to `todo`. The last check found two of the fourth round's fixes
+incomplete.
 
 ## Last check
 Two reviewers, one of the fourth round's code and one of the report, each with a skeptic, confirmed 15 items (none
-refuted). Not fixed; each needs a tap on the inner display, a fold with an article open, or a notification, which no
-capture here reaches:
+refuted). Not fixed; most need a tap on the inner display, the contents preference left on (every capture holds it
+off), a quick action or a notification, which no capture here reaches. `REPORT.md`'s "Known regressions and open
+items" gives each with its route and where to start in the code:
 - **Medium:** unfolding with an article open covers the list pane with its contents whenever the app's "contents
   visible" preference is true, which it is by default and which closing them on the cover no longer clears (the
   carry-over of the fourth round reads it on every entry into the pane, not only for a new article). The random-article
   shortcut opens in the 455 pt list pane, in place of the list: it reaches the list's stack through
   `setViewControllers`, which the container's push override never sees.
-- **Low, regressions in book and flat sideways:** a second push-notification tap stacks a second Notifications Center
-  (the "already showing" check reads the list's stack); removing a closed tab's article from the detail pane leaves it
-  blank, with no placeholder and the tab bar still hidden; tapping the current tab in the tabs overview re-creates its
-  article; the Search quick action pushes Search over the article and the tab bar reappears beside it; screens the list
-  pane opens through the router (Activity's diffs and contributions) stack on an unrelated article in the detail pane
-  when one is open, and open in the list pane when none is.
-- **Low, elsewhere:** the open-contents icon drawn on its restored fill is 18 % smaller and dark grey instead of black
-  (upright, every iOS 27.1 device); a cancelled back swipe can still bring back the previous article's contents (the
-  fourth round's guard covers a trait change only); `ArticleTableOfContentsDisplayController` still reads main-actor
-  state without isolation.
+- **Low, in book and flat sideways:** five regressions: a second push-notification tap stacks a second Notifications
+  Center (the "already showing" check reads the list's stack); removing a closed tab's article from the detail pane
+  leaves it blank, with no placeholder and the tab bar still hidden; tapping the current tab in the tabs overview
+  re-creates its article; the Search quick action pushes Search over the article and the tab bar reappears beside it;
+  screens the list pane opens through the router (Activity's diffs and contributions) stack on an unrelated article in
+  the detail pane when one is open, and open in the list pane when none is. One incomplete fix: a cancelled back swipe
+  can still bring back the previous article's contents (the fourth round's guard covers a trait change only).
+- **Low, other:** a regression, the open-contents icon drawn on its restored fill about 18 % smaller and dark grey
+  instead of black (upright on every iOS 27.1 device, and the hide item in the vertical bar in book and flat
+  sideways); an incomplete fix, `ArticleTableOfContentsDisplayController` still reading main-actor state without
+  isolation.
 - **Report slips:** the random-article shortcut listed as unaffected; the themes item's label claimed for the cover,
   where it sits in the overflow; the upright inner display called "no reserved region" (it has a horizontal one the app
-  ignores); a time total and a pixel count off by a little; a plausible item named U2 that the findings file calls U3.
+  ignores); a time total and a pixel count off by a little; a plausible item labelled "U2, U3" although the findings
+  file has no U2 (it has U0, U1 and U3). Corrected on 2026-10-31 in `REPORT.md` and `RUN-NOTES.md`.
 
 What these share: the container decides where a route goes by what the detail pane holds, and several of the app's
 routes reach a stack without the container (`setViewControllers`, a coordinator's own stack, a check that reads the
 list). The split page now says to route by where an action comes from and to cover every way onto a stack.
 
 ## Changes where there is no fold
-What the migration changes on a device or pose with no reserved region, all in the report's "Existing behaviour":
-- on any iOS 27.1 device, the article toolbar's items are plain titled items (same VoiceOver labels, same open-contents
-  look, Save's long press a one-item menu), and Saved, Activity and Search sit in an invisible container, whose tab bar
-  the app hides and shows over an open article with the push or pop (not by `hidesBottomBarWhenPushed`; not checked
-  with an interactive swipe, which the tap runner cannot do);
+What the migration changes on a device or pose without a vertical division (the only kind the app reads), all in the
+report's "Devices without a fold":
+- on any iOS 27.1 device, the article toolbar's items are plain titled items (same VoiceOver labels, the open-contents
+  fill kept but its icon smaller and grey, Save's long press a one-item menu), and Saved, Activity and Search sit in an
+  invisible container, whose tab bar the app hides and shows over an open article with the push or pop (not by
+  `hidesBottomBarWhenPushed`; not checked with an interactive swipe, which the tap runner cannot do);
 - on the Duo's cover, which has a vertical bar, the article's toolbar goes into it and some actions move into the
   system overflow (the report's "Costs" lists the ones that now take two taps).
-Nothing changes before iOS 27.1. The app's tests, its Experimental and Alpha targets and every device but the Duo
-simulator were not run. Paths that need a tap on the inner display (the W in the detail pane, routes from it, contents
-after a link) were checked in code, not captured.
+Nothing changes before iOS 27.1, by the code (not run). The app's tests, its Experimental and Alpha targets and every
+device but the Duo simulator were not run. Paths that need a tap on the inner display (the W in the detail pane, routes
+from it, contents after a link) were checked in code, not captured.
 
 ## What this repository took from it (Phase 4, step 9)
 - **Detectors**: T10 also reads custom-view toolbar items (the article toolbar stayed horizontal on the cover and
@@ -120,9 +130,9 @@ after a link) were checked in code, not captured.
   container changes, every route into a changed screen, covered views, state that follows its screen), and hand it to
   a fresh reviewer where a subagent can be started.
 - **The patterns**: Fold-aligned split's "UIKit without a split view" (a container, its effect on every device, the
-  bar's inset, size classes in a narrow pane, moving screens between stacks, routing by where an action comes from, pushes from a detail page,
-  what the list pane holds, when not to split); Reflowing columns' "When the text is a web page"; the decision table's
-  feed and map rules and bar-items rule; Even grid's costs.
+  bar's inset, size classes in a narrow pane, moving screens between stacks, routing by where an action comes from,
+  pushes from a detail page, what the list pane holds, when not to split); Reflowing columns' "When the text is a web
+  page"; the decision table's feed and map rules and bar-items rule; Even grid's costs.
 - **References**: `simulator.md` on recaptures, maps, menus that close on a fold, inner-only controls, covered content
   in the tree, `LAUNCH_ARGS` booleans and settings that carry between screens; `detectors-static.md`'s custom-view scan
   and the T13 plist glob.
