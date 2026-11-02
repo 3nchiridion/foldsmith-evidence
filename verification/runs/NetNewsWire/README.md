@@ -6,6 +6,9 @@ by a Claude Code agent with the skill and the `iphone-duo-simulator` driver, on 
 not committed), copied outside this repository, with a `duo-baseline` commit; the skill committed its work on
 `duo-migration` there.
 
+A second run on the same app, with Foldsmith 0.8.0 on 2026-11-01, is in
+[`../NetNewsWire-rerun/`](../NetNewsWire-rerun/), with a comparison of the two runs.
+
 | File | What it is |
 |---|---|
 | `REPORT.md` | the skill's report, corrected on 2026-10-31 (its "Corrections" lists what and why): status at a glance, per screen the pattern and the state of each pose, what changed, what runs on devices without a fold, the decisions left to NetNewsWire's maintainers, what was not checked, the known misses and regressions an independent review confirmed (2026-10-31), and what is left |

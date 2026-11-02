@@ -1,0 +1,11 @@
+d5cd9a2 Duo: report
+e71d74b Duo: proof — timeline, article, settings, add-feed verified in every pose
+8e7c888 Duo: read the fold from the window
+523be11 Duo: article → Reader View keeps its title and state in the vertical bar's overflow
+1c28ea1 Duo: plan marks the local changes made
+3201df1 Duo: add-feed → bar items with symbols where the bar is vertical
+4f6de2c Duo: settings, add-feed → Fold-aligned split (sheet rule)
+c091a32 Duo: article, timeline, feeds → Fold-aligned split (Reader View in the vertical bar)
+e241cb7 Duo: timeline, feeds → Fold-aligned split (placeholder off the fold)
+0dd7f93 Duo: timeline, article, feeds → Fold-aligned split (column widths, tiling)
+56ade81 Duo: audit and plan

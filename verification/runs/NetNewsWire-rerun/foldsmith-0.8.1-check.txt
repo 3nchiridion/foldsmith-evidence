@@ -1,0 +1,162 @@
+Foldsmith 0.8.1 (plugin 0.8.1, commit 851b0cf of https://github.com/3nchiridion/foldsmith) on the NetNewsWire rerun,
+run on 2026-11-01 after the run. Each output is verbatim except paths: the clone of the run's repository is written
+"NetNewsWire-rerun".
+
+== 1. The gate: progress.py check, in a copy of the run's .duo/ (migration.json at the end of the run, the before and
+==    after accessibility snapshots and detectors.md tables; no git repository, so cited commits and code identities
+==    are not checked)
+$ python3 scripts/progress.py check
+(not a git repository, or no commit yet: the commits cited and the shots' code identity are not checked)
+feeds laptop: "split view horizontally left" (before at 24,28 40×40) is gone
+feeds laptop: "Previous Article" (before at 425,28 40×40) is gone
+feeds laptop: "Next Article" (before at 481,28 40×40) is gone
+feeds laptop: "Share" (before at 603.3,884 40.7×38) is gone
+feeds tent: "split view horizontally left" (before at 24,28 40×40) is gone
+feeds tent: "Previous Article" (before at 425,28 40×40) is gone
+feeds tent: "Next Article" (before at 481,28 40×40) is gone
+feeds tent: "Share" (before at 603.3,884 40.7×38) is gone
+feeds flat-upright: "split view horizontally left" (before at 24,28 40×40) is gone
+feeds flat-upright: "Previous Article" (before at 425,28 40×40) is gone
+feeds flat-upright: "Next Article" (before at 481,28 40×40) is gone
+feeds flat-upright: "Share" (before at 603.3,884 40.7×38) is gone
+timeline laptop: "split view horizontally left" (before at 24,28 40×40) is gone
+timeline laptop: "Previous Article" (before at 425,28 40×40) is gone
+timeline laptop: "Next Article" (before at 481,28 40×40) is gone
+timeline laptop: "Share" (before at 603.3,884 40.7×38) is gone
+timeline tent: "split view horizontally left" (before at 24,28 40×40) is gone
+timeline tent: "Previous Article" (before at 425,28 40×40) is gone
+timeline tent: "Next Article" (before at 481,28 40×40) is gone
+timeline tent: "Share" (before at 603.3,884 40.7×38) is gone
+timeline flat-upright: "split view horizontally left" (before at 24,28 40×40) is gone
+timeline flat-upright: "Previous Article" (before at 425,28 40×40) is gone
+timeline flat-upright: "Next Article" (before at 481,28 40×40) is gone
+timeline flat-upright: "Share" (before at 603.3,884 40.7×38) is gone
+article closed-sideways: "Reader View" (before at 609,396 44×44) is gone
+article laptop: "split view horizontally left" (before at 24,28 40×40) is gone
+article laptop: "Previous Article" (before at 425,28 40×40) is gone
+article laptop: "Next Article" (before at 481,28 40×40) is gone
+article laptop: "Share" (before at 603.3,884 40.7×38) is gone
+article tent: "split view horizontally left" (before at 24,28 40×40) is gone
+article tent: "Previous Article" (before at 425,28 40×40) is gone
+article tent: "Next Article" (before at 481,28 40×40) is gone
+article tent: "Share" (before at 603.3,884 40.7×38) is gone
+article flat-upright: "split view horizontally left" (before at 24,28 40×40) is gone
+article flat-upright: "Previous Article" (before at 425,28 40×40) is gone
+article flat-upright: "Next Article" (before at 481,28 40×40) is gone
+article flat-upright: "Share" (before at 603.3,884 40.7×38) is gone
+done line "timeline: Fold-aligned split, verified in every pose (bound…" says verified in every pose, but the cells say timeline: Fold-aligned split, 5 verified, 2 unchanged
+done line "settings: sheet rule, verified in every pose (trailing half…" says verified in every pose, but the cells say settings: Fold-aligned split (sheet rule), 1 verified, 6 unchanged
+done line "add-feed: sheet rule and bar items, verified in every pose …" says verified in every pose, but the cells say add-feed: Fold-aligned split (sheet rule, bar items), 4 verified, 3 unchanged
+no independent review on record: record the independent review (references/review.md): progress.py review subagent "…"; a session that cannot start a subagent records none with why and tells the person to run /foldsmith-review in a new session
+(exit 1)
+
+== 2. The toolchain: sdkguard.py, on a clone of the run's repository with duo-migration (d5cd9a2) checked out
+$ python3 scripts/sdkguard.py NetNewsWire-rerun --base origin/duo-baseline --scheme NetNewsWire-iOS
+sdkguard: NetNewsWire-rerun
+CI's Xcode:
+  .github/workflows/ci.yml:43: Xcode 26.6 (Xcode_26.6.app)
+  .github/workflows/ci.yml:88: Xcode 26.6 (Xcode_26.6.app)
+  schemes the CI builds: NetNewsWire, NetNewsWire-iOS
+Installed Xcodes:
+  /Applications/Xcode-27.1.0.app: 27.1 (27A9275)
+  none is the CI's Xcode 26.6: with it installed beside 27.1 (developer.apple.com/download/all), this prints the build line that proves the branch compiles with it
+iOS 27 uses added since origin/duo-baseline (20a90a6), in 11 changed Swift files:
+errors: 11 lines the CI's Xcode 26.6 does not compile, and 8 availability checks outside #if compiler(>=6.4)
+iOS/Article/ArticleViewController.swift:223: #available(iOS 27.1) opens iOS 27 code: put it inside #if compiler(>=6.4) with the code it guards
+iOS/Article/ArticleViewController.swift:234: verticalBarEdge is iOS 27.1: wrap it in #if compiler(>=6.4) … #else <the pre-Duo code> #endif, keeping #available inside
+iOS/Article/ArticleViewController.swift:235: axisBehavior is iOS 27.1: wrap it in #if compiler(>=6.4) … #else <the pre-Duo code> #endif, keeping #available inside
+iOS/Article/ArticleViewController.swift:239: systemTraitsAffectingVerticalBarEdge is iOS 27.1: wrap it in #if compiler(>=6.4) … #else <the pre-Duo code> #endif, keeping #available inside
+iOS/Duo/DuoFold.swift:24: #available(iOS 27.1) opens iOS 27 code: put it inside #if compiler(>=6.4) with the code it guards
+iOS/Duo/DuoFold.swift:27: reservedRegions is iOS 27.1: wrap it in #if compiler(>=6.4) … #else <the pre-Duo code> #endif, keeping #available inside
+iOS/Duo/DuoFold.swift:32: #available(iOS 27.1) opens iOS 27 code: put it inside #if compiler(>=6.4) with the code it guards
+iOS/Duo/DuoFold.swift:35: reservedRegions is iOS 27.1: wrap it in #if compiler(>=6.4) … #else <the pre-Duo code> #endif, keeping #available inside
+iOS/Duo/FoldAwareSheets.swift:17: #available(iOS 27.1) opens iOS 27 code: put it inside #if compiler(>=6.4) with the code it guards
+iOS/Duo/FoldAwareSheets.swift:20: preferredPlacement is iOS 27.0: wrap it in #if compiler(>=6.4) … #else <the pre-Duo code> #endif, keeping #available inside
+iOS/Duo/FoldAwareSheets.swift:25: #available(iOS 27.1) opens iOS 27 code: put it inside #if compiler(>=6.4) with the code it guards
+iOS/Duo/FoldAwareSheets.swift:28: UISheetPresentationController.Placement is iOS 27.0: wrap it in #if compiler(>=6.4) … #else <the pre-Duo code> #endif, keeping #available inside
+iOS/Duo/FoldAwareSheets.swift:31: preferredPlacement is iOS 27.0: wrap it in #if compiler(>=6.4) … #else <the pre-Duo code> #endif, keeping #available inside
+iOS/Duo/FoldAwareSheets.swift:33: preferredPlacement is iOS 27.0: wrap it in #if compiler(>=6.4) … #else <the pre-Duo code> #endif, keeping #available inside
+iOS/Duo/VerticalBarReader.swift:16: #available(iOS 27.1) opens iOS 27 code: put it inside #if compiler(>=6.4) with the code it guards
+iOS/Duo/VerticalBarReader.swift:24: @available(iOS 27.1) opens iOS 27 code: put it inside #if compiler(>=6.4) with the code it guards
+iOS/Duo/VerticalBarReader.swift:27: toolbarVerticalEdge is iOS 27.1: wrap it in #if compiler(>=6.4) … #else <the pre-Duo code> #endif, keeping #available inside
+iOS/RootSplitViewController.swift:53: #available(iOS 27.1) opens iOS 27 code: put it inside #if compiler(>=6.4) with the code it guards
+iOS/RootSplitViewController.swift:56: UIHingeInteraction is iOS 27.1: wrap it in #if compiler(>=6.4) … #else <the pre-Duo code> #endif, keeping #available inside
+verdict: CI builds with Xcode 26.6 (.github/workflows/ci.yml:43), which has no iOS 27 SDK: the 11 lines above do not compile there and 8 availability checks are outside the guard (exit 1)
+(exit 1)
+
+== 3. The gate again, in that clone, with the same snapshots and tables copied under .duo/captures/: the cited commits
+==    are checked here; the captures predate 0.8.1 and carry no code identity, which the gate notes and does not count
+$ python3 scripts/progress.py check
+(no code identity for feeds closed)
+(no code identity for feeds closed-sideways)
+(no code identity for timeline closed)
+(no code identity for timeline closed-sideways)
+(no code identity for timeline book)
+(no code identity for timeline laptop)
+(no code identity for timeline tent)
+(no code identity for timeline flat-sideways)
+(no code identity for timeline flat-upright)
+(no code identity for article closed)
+(no code identity for article closed-sideways)
+(no code identity for article book)
+(no code identity for article laptop)
+(no code identity for article tent)
+(no code identity for article flat-sideways)
+(no code identity for article flat-upright)
+(no code identity for settings closed)
+(no code identity for settings closed-sideways)
+(no code identity for settings book)
+(no code identity for settings laptop)
+(no code identity for settings tent)
+(no code identity for settings flat-sideways)
+(no code identity for settings flat-upright)
+(no code identity for add-feed closed)
+(no code identity for add-feed closed-sideways)
+(no code identity for add-feed book)
+(no code identity for add-feed laptop)
+(no code identity for add-feed tent)
+(no code identity for add-feed flat-sideways)
+(no code identity for add-feed flat-upright)
+feeds laptop: "split view horizontally left" (before at 24,28 40×40) is gone
+feeds laptop: "Previous Article" (before at 425,28 40×40) is gone
+feeds laptop: "Next Article" (before at 481,28 40×40) is gone
+feeds laptop: "Share" (before at 603.3,884 40.7×38) is gone
+feeds tent: "split view horizontally left" (before at 24,28 40×40) is gone
+feeds tent: "Previous Article" (before at 425,28 40×40) is gone
+feeds tent: "Next Article" (before at 481,28 40×40) is gone
+feeds tent: "Share" (before at 603.3,884 40.7×38) is gone
+feeds flat-upright: "split view horizontally left" (before at 24,28 40×40) is gone
+feeds flat-upright: "Previous Article" (before at 425,28 40×40) is gone
+feeds flat-upright: "Next Article" (before at 481,28 40×40) is gone
+feeds flat-upright: "Share" (before at 603.3,884 40.7×38) is gone
+timeline laptop: "split view horizontally left" (before at 24,28 40×40) is gone
+timeline laptop: "Previous Article" (before at 425,28 40×40) is gone
+timeline laptop: "Next Article" (before at 481,28 40×40) is gone
+timeline laptop: "Share" (before at 603.3,884 40.7×38) is gone
+timeline tent: "split view horizontally left" (before at 24,28 40×40) is gone
+timeline tent: "Previous Article" (before at 425,28 40×40) is gone
+timeline tent: "Next Article" (before at 481,28 40×40) is gone
+timeline tent: "Share" (before at 603.3,884 40.7×38) is gone
+timeline flat-upright: "split view horizontally left" (before at 24,28 40×40) is gone
+timeline flat-upright: "Previous Article" (before at 425,28 40×40) is gone
+timeline flat-upright: "Next Article" (before at 481,28 40×40) is gone
+timeline flat-upright: "Share" (before at 603.3,884 40.7×38) is gone
+article closed-sideways: "Reader View" (before at 609,396 44×44) is gone
+article laptop: "split view horizontally left" (before at 24,28 40×40) is gone
+article laptop: "Previous Article" (before at 425,28 40×40) is gone
+article laptop: "Next Article" (before at 481,28 40×40) is gone
+article laptop: "Share" (before at 603.3,884 40.7×38) is gone
+article tent: "split view horizontally left" (before at 24,28 40×40) is gone
+article tent: "Previous Article" (before at 425,28 40×40) is gone
+article tent: "Next Article" (before at 481,28 40×40) is gone
+article tent: "Share" (before at 603.3,884 40.7×38) is gone
+article flat-upright: "split view horizontally left" (before at 24,28 40×40) is gone
+article flat-upright: "Previous Article" (before at 425,28 40×40) is gone
+article flat-upright: "Next Article" (before at 481,28 40×40) is gone
+article flat-upright: "Share" (before at 603.3,884 40.7×38) is gone
+done line "timeline: Fold-aligned split, verified in every pose (bound…" says verified in every pose, but the cells say timeline: Fold-aligned split, 5 verified, 2 unchanged
+done line "settings: sheet rule, verified in every pose (trailing half…" says verified in every pose, but the cells say settings: Fold-aligned split (sheet rule), 1 verified, 6 unchanged
+done line "add-feed: sheet rule and bar items, verified in every pose …" says verified in every pose, but the cells say add-feed: Fold-aligned split (sheet rule, bar items), 4 verified, 3 unchanged
+issue I3's note cites 87584b9, which is not on this branch (an amended or rebased commit?): cite 8e7c888 ("Duo: read the fold from the window")
+no independent review on record: record the independent review (references/review.md): progress.py review subagent "…"; a session that cannot start a subagent records none with why and tells the person to run /foldsmith-review in a new session
+(exit 1)

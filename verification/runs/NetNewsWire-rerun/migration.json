@@ -1,0 +1,445 @@
+{
+  "app": "NetNewsWire",
+  "phase": "done",
+  "poses": [
+    "closed",
+    "closed-sideways",
+    "book",
+    "laptop",
+    "tent",
+    "flat-sideways",
+    "flat-upright"
+  ],
+  "screens": [
+    {
+      "name": "feeds",
+      "cells": {
+        "closed": {
+          "state": "unchanged",
+          "before": ".duo/captures/NetNewsWire/before/feeds-closed-cover.png",
+          "after": ".duo/captures/NetNewsWire/after/feeds-closed-cover.png",
+          "waived": {
+            "unchanged": "Only the feeds header's live subtitle changed (Updated 8 minutes ago → Updated 11 minutes ago / Just Now) and the unread counts after a refresh; the layout is the same"
+          }
+        },
+        "closed-sideways": {
+          "state": "unchanged",
+          "before": ".duo/captures/NetNewsWire/before/feeds-closed-sideways-cover.png",
+          "after": ".duo/captures/NetNewsWire/after/feeds-closed-sideways-cover.png",
+          "waived": {
+            "unchanged": "Only the feeds header's live subtitle changed (Updated 8 minutes ago → Updated 11 minutes ago / Just Now) and the unread counts after a refresh; the layout is the same"
+          }
+        },
+        "book": {
+          "state": "finding",
+          "before": ".duo/captures/NetNewsWire/before/feeds-book-inner.png",
+          "label": "T7 · structural: .duo/PLAN.md (T10, T14, T1 fixed)",
+          "after": ".duo/captures/NetNewsWire/after/feeds-book-inner.png"
+        },
+        "laptop": {
+          "state": "finding",
+          "before": ".duo/captures/NetNewsWire/before/feeds-laptop-inner.png",
+          "label": "T7 · structural: .duo/PLAN.md (T10, T14, T1 fixed)",
+          "after": ".duo/captures/NetNewsWire/after/feeds-laptop-inner.png"
+        },
+        "tent": {
+          "state": "finding",
+          "before": ".duo/captures/NetNewsWire/before/feeds-tent-inner.png",
+          "label": "T7 · structural: .duo/PLAN.md (T10, T14, T1 fixed)",
+          "after": ".duo/captures/NetNewsWire/after/feeds-tent-inner.png"
+        },
+        "flat-sideways": {
+          "state": "finding",
+          "before": ".duo/captures/NetNewsWire/before/feeds-flat-sideways-inner.png",
+          "label": "T7 · structural: .duo/PLAN.md (T10, T14, T1 fixed)",
+          "after": ".duo/captures/NetNewsWire/after/feeds-flat-sideways-inner.png"
+        },
+        "flat-upright": {
+          "state": "finding",
+          "before": ".duo/captures/NetNewsWire/before/feeds-flat-upright-inner.png",
+          "label": "T7 · structural: .duo/PLAN.md",
+          "after": ".duo/captures/NetNewsWire/after/feeds-flat-upright-inner.png"
+        }
+      },
+      "pattern": "Fold-aligned split"
+    },
+    {
+      "name": "timeline",
+      "cells": {
+        "closed": {
+          "state": "unchanged",
+          "before": ".duo/captures/NetNewsWire/before/timeline-closed-cover.png",
+          "after": ".duo/captures/NetNewsWire/after/timeline-closed-cover.png"
+        },
+        "closed-sideways": {
+          "state": "unchanged",
+          "before": ".duo/captures/NetNewsWire/before/timeline-closed-sideways-cover.png",
+          "after": ".duo/captures/NetNewsWire/after/timeline-closed-sideways-cover.png"
+        },
+        "book": {
+          "state": "verified",
+          "before": ".duo/captures/NetNewsWire/before/timeline-book-inner.png",
+          "label": "Fold-aligned split",
+          "after": ".duo/captures/NetNewsWire/after/timeline-book-inner.png"
+        },
+        "laptop": {
+          "state": "verified",
+          "before": ".duo/captures/NetNewsWire/before/timeline-laptop-inner.png",
+          "label": "Fold-aligned split",
+          "after": ".duo/captures/NetNewsWire/after/timeline-laptop-inner.png"
+        },
+        "tent": {
+          "state": "verified",
+          "before": ".duo/captures/NetNewsWire/before/timeline-tent-inner.png",
+          "label": "Fold-aligned split",
+          "after": ".duo/captures/NetNewsWire/after/timeline-tent-inner.png"
+        },
+        "flat-sideways": {
+          "state": "verified",
+          "before": ".duo/captures/NetNewsWire/before/timeline-flat-sideways-inner.png",
+          "label": "Fold-aligned split",
+          "after": ".duo/captures/NetNewsWire/after/timeline-flat-sideways-inner.png"
+        },
+        "flat-upright": {
+          "state": "verified",
+          "before": ".duo/captures/NetNewsWire/before/timeline-flat-upright-inner.png",
+          "label": "Fold-aligned split",
+          "after": ".duo/captures/NetNewsWire/after/timeline-flat-upright-inner.png"
+        }
+      },
+      "pattern": "Fold-aligned split"
+    },
+    {
+      "name": "article",
+      "cells": {
+        "closed": {
+          "state": "verified",
+          "before": ".duo/captures/NetNewsWire/before/article-closed-cover.png",
+          "label": "Fold-aligned split",
+          "after": ".duo/captures/NetNewsWire/after/article-closed-cover.png"
+        },
+        "closed-sideways": {
+          "state": "verified",
+          "before": ".duo/captures/NetNewsWire/before/article-closed-sideways-cover.png",
+          "label": "Fold-aligned split",
+          "after": ".duo/captures/NetNewsWire/after/article-closed-sideways-cover.png"
+        },
+        "book": {
+          "state": "verified",
+          "before": ".duo/captures/NetNewsWire/before/article-book-inner.png",
+          "label": "Fold-aligned split",
+          "after": ".duo/captures/NetNewsWire/after/article-book-inner.png"
+        },
+        "laptop": {
+          "state": "verified",
+          "before": ".duo/captures/NetNewsWire/before/article-laptop-inner.png",
+          "label": "Fold-aligned split (two panes upright: timeline beside the article)",
+          "after": ".duo/captures/NetNewsWire/after/article-laptop-inner.png"
+        },
+        "tent": {
+          "state": "verified",
+          "before": ".duo/captures/NetNewsWire/before/article-tent-inner.png",
+          "label": "Fold-aligned split (two panes upright: timeline beside the article)",
+          "after": ".duo/captures/NetNewsWire/after/article-tent-inner.png"
+        },
+        "flat-sideways": {
+          "state": "verified",
+          "before": ".duo/captures/NetNewsWire/before/article-flat-sideways-inner.png",
+          "label": "Fold-aligned split",
+          "after": ".duo/captures/NetNewsWire/after/article-flat-sideways-inner.png"
+        },
+        "flat-upright": {
+          "state": "verified",
+          "before": ".duo/captures/NetNewsWire/before/article-flat-upright-inner.png",
+          "label": "Fold-aligned split (two panes upright: timeline beside the article)",
+          "after": ".duo/captures/NetNewsWire/after/article-flat-upright-inner.png"
+        }
+      },
+      "pattern": "Fold-aligned split (detail pane)"
+    },
+    {
+      "name": "settings",
+      "cells": {
+        "closed": {
+          "state": "unchanged",
+          "before": ".duo/captures/NetNewsWire/before/settings-closed-cover.png",
+          "after": ".duo/captures/NetNewsWire/after/settings-closed-cover.png"
+        },
+        "closed-sideways": {
+          "state": "unchanged",
+          "before": ".duo/captures/NetNewsWire/before/settings-closed-sideways-cover.png",
+          "after": ".duo/captures/NetNewsWire/after/settings-closed-sideways-cover.png"
+        },
+        "book": {
+          "state": "verified",
+          "before": ".duo/captures/NetNewsWire/before/settings-book-inner.png",
+          "label": "sheet rule",
+          "after": ".duo/captures/NetNewsWire/after/settings-book-inner.png"
+        },
+        "laptop": {
+          "state": "unchanged",
+          "before": ".duo/captures/NetNewsWire/before/settings-laptop-inner.png",
+          "after": ".duo/captures/NetNewsWire/after/settings-laptop-inner.png"
+        },
+        "tent": {
+          "state": "unchanged",
+          "before": ".duo/captures/NetNewsWire/before/settings-tent-inner.png",
+          "after": ".duo/captures/NetNewsWire/after/settings-tent-inner.png"
+        },
+        "flat-sideways": {
+          "state": "unchanged",
+          "before": ".duo/captures/NetNewsWire/before/settings-flat-sideways-inner.png",
+          "after": ".duo/captures/NetNewsWire/after/settings-flat-sideways-inner.png"
+        },
+        "flat-upright": {
+          "state": "unchanged",
+          "before": ".duo/captures/NetNewsWire/before/settings-flat-upright-inner.png",
+          "after": ".duo/captures/NetNewsWire/after/settings-flat-upright-inner.png"
+        }
+      },
+      "pattern": "Fold-aligned split (sheet rule)"
+    },
+    {
+      "name": "add-feed",
+      "cells": {
+        "closed": {
+          "state": "verified",
+          "before": ".duo/captures/NetNewsWire/before/add-feed-closed-cover.png",
+          "label": "bar items; sheet rule in book",
+          "after": ".duo/captures/NetNewsWire/after/add-feed-closed-cover.png"
+        },
+        "closed-sideways": {
+          "state": "verified",
+          "before": ".duo/captures/NetNewsWire/before/add-feed-closed-sideways-cover.png",
+          "label": "bar items; sheet rule in book",
+          "after": ".duo/captures/NetNewsWire/after/add-feed-closed-sideways-cover.png"
+        },
+        "book": {
+          "state": "verified",
+          "before": ".duo/captures/NetNewsWire/before/add-feed-book-inner.png",
+          "label": "bar items; sheet rule in book",
+          "after": ".duo/captures/NetNewsWire/after/add-feed-book-inner.png"
+        },
+        "laptop": {
+          "state": "unchanged",
+          "before": ".duo/captures/NetNewsWire/before/add-feed-laptop-inner.png",
+          "after": ".duo/captures/NetNewsWire/after/add-feed-laptop-inner.png"
+        },
+        "tent": {
+          "state": "unchanged",
+          "before": ".duo/captures/NetNewsWire/before/add-feed-tent-inner.png",
+          "after": ".duo/captures/NetNewsWire/after/add-feed-tent-inner.png"
+        },
+        "flat-sideways": {
+          "state": "verified",
+          "before": ".duo/captures/NetNewsWire/before/add-feed-flat-sideways-inner.png",
+          "label": "bar items (T10 waived: centred sheet, horizontal bar)",
+          "after": ".duo/captures/NetNewsWire/after/add-feed-flat-sideways-inner.png",
+          "waived": {
+            "T10": "Open flat the sheet is centred (the sheet rule: trailing only while the book fold is active) and a centred sheet's own bar is horizontal, as Apple places it (overview; tt-111462 3:09): toolbarVerticalEdge is nil inside it and the root's verticalBarEdge reads unspecified while it is up. Cancel and Add sit in that horizontal bar, as they did before; the detector judges by the window's vertical bar behind the sheet"
+          }
+        },
+        "flat-upright": {
+          "state": "unchanged",
+          "before": ".duo/captures/NetNewsWire/before/add-feed-flat-upright-inner.png",
+          "after": ".duo/captures/NetNewsWire/after/add-feed-flat-upright-inner.png"
+        }
+      },
+      "pattern": "Fold-aligned split (sheet rule, bar items)"
+    }
+  ],
+  "done": [
+    "timeline: Fold-aligned split, verified in every pose (boundary on the fold in book, two panes upright, placeholder off the fold, Reader View in the vertical bar)",
+    "article: Fold-aligned split's detail pane, verified in every pose (Reader View in the vertical bar, overflow item on the turned cover; Previous, Next and Share in More upright)",
+    "settings: sheet rule, verified in every pose (trailing half in book)",
+    "add-feed: sheet rule and bar items, verified in every pose (T10 waived flat sideways: centred sheet)"
+  ],
+  "todo": [
+    "feeds: T7 in every inner pose waits on a structural change (three levels in two panes): .duo/PLAN.md"
+  ],
+  "log": [
+    "23:11 started NetNewsWire",
+    "23:11 preflight ok (8.1 GB free, warn); tap runner rebuilt (source newer); branch duo-migration created from duo-baseline 20a90a6",
+    "23:23 static scans: T13 ok (Info.plist manifest, SceneDelegate); T14 six split widths in SceneCoordinator.init; T10 text items in Add Feed, Add Folder, Account Setup, Current Activity, Activity Log, Error Log; custom views: article Reader View, feeds and timeline refresh progress (pre-iOS 26 only); T9, T3 none",
+    "23:23 screens: feeds (launch), timeline (Daring Fireball), article (its first row), settings (sheet), add-feed (sheet); all five reached on the cover (reach capture). First build of the fresh checkout failed (SecretKey.swift is generated mid-build); the second built. Content: the app's own first-run download of its default feeds (301 unread). LAUNCH_ARGS pin selection restoration and the split's saved display mode",
+    "23:23 phase audit",
+    "23:25 before shot feeds / closed",
+    "23:25 before shot feeds / closed-sideways",
+    "23:25 before shot feeds / book",
+    "23:25 before shot feeds / laptop",
+    "23:26 before shot feeds / tent",
+    "23:26 before shot feeds / flat-sideways",
+    "23:27 before shot feeds / flat-upright",
+    "23:28 before shot timeline / closed",
+    "23:28 before shot timeline / closed-sideways",
+    "23:28 before shot timeline / book",
+    "23:28 before shot timeline / laptop",
+    "23:29 before shot timeline / tent",
+    "23:29 before shot timeline / flat-sideways",
+    "23:30 before shot timeline / flat-upright",
+    "23:31 before shot article / closed",
+    "23:31 before shot article / closed-sideways",
+    "23:31 before shot article / book",
+    "23:32 before shot article / laptop",
+    "23:32 before shot article / tent",
+    "23:32 before shot article / flat-sideways",
+    "23:33 before shot article / flat-upright",
+    "23:34 before shot settings / closed",
+    "23:34 before shot settings / closed-sideways",
+    "23:35 before shot settings / book",
+    "23:35 before shot settings / laptop",
+    "23:35 before shot settings / tent",
+    "23:36 before shot settings / flat-sideways",
+    "23:36 before shot settings / flat-upright",
+    "23:37 before shot add-feed / closed",
+    "23:38 before shot add-feed / closed-sideways",
+    "23:38 before shot add-feed / book",
+    "23:38 before shot add-feed / laptop",
+    "23:39 before shot add-feed / tent",
+    "23:39 before shot add-feed / flat-sideways",
+    "23:40 before shot add-feed / flat-upright",
+    "23:41 audit capture: 35 cells, exit 0 (16.7 min); 34 detector lines; every shot looked at, each detector line borne out; no extra finding by eye (article cover's black disc is the outer camera; laptop sheets span the fold but scroll)",
+    "23:43 phase classify",
+    "23:43 classified: feeds, timeline hierarchical/viewing (P1); article continuous/viewing in P1's detail pane (web page rule); settings, add-feed hierarchical/editing sheets (sheet rule; add-feed bar rule). audit.md and PLAN.md written; feeds T7 proposed as structural (three levels), not made (no --structural)",
+    "23:43 phase migrate",
+    "23:48 change 1 (split widths and tiling where the window has a fold): built; probe of timeline in book, laptop, flat-sideways: T14 gone in book (boundary on the fold), laptop tiles the timeline beside the detail (T7 gone), flat sideways leading pane narrower; T1 and T10 left for changes 2 and 3",
+    "23:53 change 2 (placeholder at 25% where the window has a fold): probe feeds laptop: No selection at y≈245, off the fold (T1 gone)",
+    "23:53 change 3 (Reader View axisBehavior .verticalPreferred where the window has a vertical bar): probe article closed and book: Reader View in the vertical bar (T10 gone)",
+    "00:07 change 4 (sheet rule): probe settings and add-feed closed, book, flat-sideways: both sheets trailing in book (T15 gone), presented on the cover and moved when unfolded; centred flat",
+    "00:07 change 5 (Add Feed Cancel and Add with symbols where the bars are vertical): probe closed, closed-sideways, book: both in the vertical bar (T10 gone); laptop text as before. flat-sideways: the centred sheet's own bar is horizontal (toolbarVerticalEdge nil; the root's verticalBarEdge also reads unspecified while it is up), so the text items stay, as Apple places a centred sheet's items; the detector still reads T10 there (it judges by the window's bar). A window-level probe was tried and dropped: the root reports no vertical bar while the centred sheet is up",
+    "00:07 article laptop, tent, flat-upright: unchanged before, now change with change 1 (the timeline tiles beside the article upright, the decision table's P1 two panes for hierarchical content); marked migrated so the proof checks them",
+    "00:07 phase verify",
+    "00:09 after shot feeds / closed",
+    "00:09 after shot feeds / closed-sideways",
+    "00:09 after shot feeds / book",
+    "00:09 after shot feeds / laptop",
+    "00:10 after shot feeds / tent",
+    "00:11 after shot feeds / flat-sideways",
+    "00:11 after shot feeds / flat-upright",
+    "00:12 after shot timeline / closed",
+    "00:12 after shot timeline / closed-sideways",
+    "00:12 after shot timeline / book",
+    "00:13 after shot timeline / laptop",
+    "00:13 after shot timeline / tent",
+    "00:14 after shot timeline / flat-sideways",
+    "00:14 after shot timeline / flat-upright",
+    "00:15 after shot article / closed",
+    "00:15 after shot article / closed-sideways",
+    "00:16 after shot article / book",
+    "00:16 after shot article / laptop",
+    "00:17 after shot article / tent",
+    "00:17 after shot article / flat-sideways",
+    "00:18 after shot article / flat-upright",
+    "00:19 after shot settings / closed",
+    "00:19 after shot settings / closed-sideways",
+    "00:19 after shot settings / book",
+    "00:19 after shot settings / laptop",
+    "00:20 after shot settings / tent",
+    "00:20 after shot settings / flat-sideways",
+    "00:21 after shot settings / flat-upright",
+    "00:22 after shot add-feed / closed",
+    "00:22 after shot add-feed / closed-sideways",
+    "00:22 after shot add-feed / book",
+    "00:23 after shot add-feed / laptop",
+    "00:23 after shot add-feed / tent",
+    "00:23 after shot add-feed / flat-sideways",
+    "00:24 after shot add-feed / flat-upright",
+    "00:27 issue I1 article closed-sideways: medium regression, Reader View, set .verticalPreferred, no longer fits the turned cover's short vertical bar and lands in its More overflow; a custom-view item has no title or image there, so the overflow could not show it (before, it sat stranded but tappable at the bottom right)",
+    "00:27 issue I2 article laptop,tent,flat-upright: low, With the timeline beside it upright, the article's 328 pt pane has no room for Previous Article, Next Article and Share: they are in the detail's More overflow (one more tap each); every other item stays in its bar",
+    "00:27 waived T10 on add-feed / flat-sideways: Open flat the sheet is centred (the sheet rule: trailing only while the book fold is active) and a centred sheet's own bar is horizontal, as Apple places it (overview; tt-111462 3:09): toolbarVerticalEdge is nil inside it and the root's verticalBarEdge reads unspecified while it is up. Cancel and Add sit in that horizontal bar, as they did before; the detector judges by the window's vertical bar behind the sheet",
+    "00:28 issue I2 wontfix: A cost of the decision table's two panes upright (hierarchical, laptop: P1 two panes, as Settings tiles them): the three items are the article's own titled bar items, reachable from More in one more tap; undoing the tiling would leave the timeline off the inner display upright again (T7)",
+    "00:28 after shot feeds / closed",
+    "00:28 after shot feeds / closed-sideways",
+    "00:29 after shot feeds / book",
+    "00:29 after shot feeds / laptop",
+    "00:29 after shot feeds / tent",
+    "00:30 after shot feeds / flat-sideways",
+    "00:30 after shot feeds / flat-upright",
+    "00:31 after shot timeline / closed",
+    "00:31 after shot timeline / closed-sideways",
+    "00:32 after shot timeline / book",
+    "00:32 after shot timeline / laptop",
+    "00:33 after shot timeline / tent",
+    "00:33 after shot timeline / flat-sideways",
+    "00:34 after shot timeline / flat-upright",
+    "00:35 after shot article / closed",
+    "00:35 after shot article / closed-sideways",
+    "00:35 after shot article / book",
+    "00:35 after shot article / laptop",
+    "00:36 after shot article / tent",
+    "00:36 after shot article / flat-sideways",
+    "00:37 after shot article / flat-upright",
+    "00:38 issue I3 timeline book,flat-sideways: low, The empty detail's placeholder stays at 45 % in book and flat sideways while laptop moves it to 25 %: the detail pane, which starts where the fold ends, reports no division of its own, so the fold check read the pane, not the window (a sheet presented from inside a sheet would read its own view the same way)",
+    "00:39 after shot feeds / closed",
+    "00:39 after shot feeds / closed-sideways",
+    "00:40 after shot feeds / book",
+    "00:40 after shot feeds / laptop",
+    "00:41 after shot feeds / tent",
+    "00:41 after shot feeds / flat-sideways",
+    "00:42 after shot feeds / flat-upright",
+    "00:42 after shot timeline / closed",
+    "00:43 after shot timeline / closed-sideways",
+    "00:43 after shot timeline / book",
+    "00:43 after shot timeline / laptop",
+    "00:44 after shot timeline / tent",
+    "00:44 after shot timeline / flat-sideways",
+    "00:44 after shot timeline / flat-upright",
+    "00:46 issue I3 wontfix: Not a defect: measured in both after captures, the placeholder already sat at 233-246 pt in book (25 %, against 321-336 pt before); my estimate from a contact sheet was wrong. The window read (87584b9) stays as hardening for a sheet presented from inside a sheet, and changed no shot",
+    "00:46 issue I1 fixed: 523be11: where the window has a vertical bar the item has a menu representation built when the overflow opens (Reader View, the button's image, its on state, its enabled state; toggles the extractor). Checked by its code path and the after snapshot (Reader View is the item the turned cover's bar lacks), not by a tap: a menu the last tap opens closes on the next fold, and taps reach only the upright cover, where the item is in the bar",
+    "00:46 waived unchanged on feeds / closed,closed-sideways: Only the feeds header's live subtitle changed (Updated 8 minutes ago → Updated 11 minutes ago / Just Now) and the unread counts after a refresh; the layout is the same",
+    "00:46 done timeline: Fold-aligned split, verified in every pose (boundary on the fold in book, two panes upright, placeholder off the fold, Reader View in the vertical bar)",
+    "00:46 done article: Fold-aligned split's detail pane, verified in every pose (Reader View in the vertical bar, overflow item on the turned cover; Previous, Next and Share in More upright)",
+    "00:46 done settings: sheet rule, verified in every pose (trailing half in book)",
+    "00:46 done add-feed: sheet rule and bar items, verified in every pose (T10 waived flat sideways: centred sheet)",
+    "00:46 proof: after capture 35 cells (exit 0), feeds, timeline and article recaptured twice after two fixes (exit 0); every shot looked at; detectors: feeds T7 in five inner poses (structural, left), add-feed flat-sideways T10 waived; check passes",
+    "00:47 report written (.duo/REPORT.md); App Store set exported (18 shots, .duo/appstore, out of git)",
+    "00:47 phase done"
+  ],
+  "simulator": "the iPhone Duo simulator",
+  "issues": [
+    {
+      "id": "I1",
+      "screen": "article",
+      "poses": [
+        "closed-sideways"
+      ],
+      "severity": "medium",
+      "regression": true,
+      "found_by": "review",
+      "what": "Reader View, set .verticalPreferred, no longer fits the turned cover's short vertical bar and lands in its More overflow; a custom-view item has no title or image there, so the overflow could not show it (before, it sat stranded but tappable at the bottom right)",
+      "where": "iOS/Article/ArticleViewController.swift:144",
+      "status": "fixed",
+      "note": "523be11: where the window has a vertical bar the item has a menu representation built when the overflow opens (Reader View, the button's image, its on state, its enabled state; toggles the extractor). Checked by its code path and the after snapshot (Reader View is the item the turned cover's bar lacks), not by a tap: a menu the last tap opens closes on the next fold, and taps reach only the upright cover, where the item is in the bar"
+    },
+    {
+      "id": "I2",
+      "screen": "article",
+      "poses": [
+        "laptop",
+        "tent",
+        "flat-upright"
+      ],
+      "severity": "low",
+      "regression": false,
+      "found_by": "eye",
+      "what": "With the timeline beside it upright, the article's 328 pt pane has no room for Previous Article, Next Article and Share: they are in the detail's More overflow (one more tap each); every other item stays in its bar",
+      "status": "wontfix",
+      "note": "A cost of the decision table's two panes upright (hierarchical, laptop: P1 two panes, as Settings tiles them): the three items are the article's own titled bar items, reachable from More in one more tap; undoing the tiling would leave the timeline off the inner display upright again (T7)"
+    },
+    {
+      "id": "I3",
+      "screen": "timeline",
+      "poses": [
+        "book",
+        "flat-sideways"
+      ],
+      "severity": "low",
+      "regression": false,
+      "found_by": "review",
+      "what": "The empty detail's placeholder stays at 45 % in book and flat sideways while laptop moves it to 25 %: the detail pane, which starts where the fold ends, reports no division of its own, so the fold check read the pane, not the window (a sheet presented from inside a sheet would read its own view the same way)",
+      "where": "iOS/Duo/DuoFold.swift:22",
+      "status": "wontfix",
+      "note": "Not a defect: measured in both after captures, the placeholder already sat at 233-246 pt in book (25 %, against 321-336 pt before); my estimate from a contact sheet was wrong. The window read (87584b9) stays as hardening for a sheet presented from inside a sheet, and changed no shot"
+    }
+  ]
+}

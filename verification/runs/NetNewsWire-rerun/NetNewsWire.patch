@@ -1,0 +1,628 @@
+NetNewsWire (https://github.com/Ranchero-Software/NetNewsWire, d9ec7df) is licensed under the MIT License, Copyright
+(c) 2002-2025 Brent Simmons. This patch changes it under the same license; the license's text is in
+LICENSE-MIT-NetNewsWire, next to this file. git apply skips this preamble.
+
+diff --git a/iOS/Add/AddFeedView.swift b/iOS/Add/AddFeedView.swift
+index 91bf4b5..1d0ca28 100644
+--- a/iOS/Add/AddFeedView.swift
++++ b/iOS/Add/AddFeedView.swift
+@@ -33,53 +33,68 @@ struct AddFeedView: View {
+ 
+ 	var body: some View {
+ 		NavigationStack {
+-			Form {
+-				Section {
+-					TextField(NSLocalizedString("URL", comment: "Label for a feed URL"), text: $urlString)
+-						.textContentType(.URL)
+-						.keyboardType(.URL)
+-						.textInputAutocapitalization(.never)
+-						.autocorrectionDisabled()
+-						.focused($isURLFieldFocused)
+-						.onSubmit {
+-							isURLFieldFocused = false
++			VerticalBarReader { hasVerticalBar in
++				Form {
++					Section {
++						TextField(NSLocalizedString("URL", comment: "Label for a feed URL"), text: $urlString)
++							.textContentType(.URL)
++							.keyboardType(.URL)
++							.textInputAutocapitalization(.never)
++							.autocorrectionDisabled()
++							.focused($isURLFieldFocused)
++							.onSubmit {
++								isURLFieldFocused = false
++							}
++						TextField(NSLocalizedString("Title (Optional)", comment: "Feed title placeholder"), text: $name)
++							.textInputAutocapitalization(.words)
++					}
++					Section {
++						NavigationLink {
++							AddFeedContainerPickerView(selectedContainer: $container)
++						} label: {
++							LabeledContent(NSLocalizedString("Folder", comment: "Label for choosing the folder a feed is added to"), value: containerName)
+ 						}
+-					TextField(NSLocalizedString("Title (Optional)", comment: "Feed title placeholder"), text: $name)
+-						.textInputAutocapitalization(.words)
+-				}
+-				Section {
+-					NavigationLink {
+-						AddFeedContainerPickerView(selectedContainer: $container)
+-					} label: {
+-						LabeledContent(NSLocalizedString("Folder", comment: "Label for choosing the folder a feed is added to"), value: containerName)
+ 					}
+ 				}
+-			}
+-			.navigationTitle(NSLocalizedString("Add Feed", comment: "Add Feed"))
+-			.navigationBarTitleDisplayMode(.inline)
+-			.toolbar {
+-				ToolbarItem(placement: .cancellationAction) {
+-					Button(NSLocalizedString("Cancel", comment: "Cancel button"), role: .cancel) {
+-						dismiss()
++				.navigationTitle(NSLocalizedString("Add Feed", comment: "Add Feed"))
++				.navigationBarTitleDisplayMode(.inline)
++				.toolbar {
++					// iPhone Duo: text-only items stay horizontal where the bar is vertical; there they carry a symbol too.
++					ToolbarItem(placement: .cancellationAction) {
++						if hasVerticalBar {
++							Button(NSLocalizedString("Cancel", comment: "Cancel button"), systemImage: "xmark", role: .cancel) {
++								dismiss()
++							}
++							.disabled(isAdding)
++						} else {
++							Button(NSLocalizedString("Cancel", comment: "Cancel button"), role: .cancel) {
++								dismiss()
++							}
++							.disabled(isAdding)
++						}
+ 					}
+-					.disabled(isAdding)
+-				}
+-				ToolbarItem(placement: .confirmationAction) {
+-					if isAdding {
+-						ProgressView()
+-					} else {
+-						Button(NSLocalizedString("Add", comment: "Add button")) {
+-							addFeed()
++					ToolbarItem(placement: .confirmationAction) {
++						if isAdding {
++							ProgressView()
++						} else if hasVerticalBar {
++							Button(NSLocalizedString("Add", comment: "Add button"), systemImage: "checkmark") {
++								addFeed()
++							}
++							.disabled(!canAdd)
++						} else {
++							Button(NSLocalizedString("Add", comment: "Add button")) {
++								addFeed()
++							}
++							.disabled(!canAdd)
+ 						}
+-						.disabled(!canAdd)
+ 					}
+ 				}
+-			}
+-			.interactiveDismissDisabled(isAdding)
+-			.errorAlert(message: $errorMessage)
+-			.onAppear {
+-				if urlString.isEmpty {
+-					isURLFieldFocused = true
++				.interactiveDismissDisabled(isAdding)
++				.errorAlert(message: $errorMessage)
++				.onAppear {
++					if urlString.isEmpty {
++						isURLFieldFocused = true
++					}
+ 				}
+ 			}
+ 		}
+diff --git a/iOS/Article/ArticleViewController.swift b/iOS/Article/ArticleViewController.swift
+index cefb425..a60e9a5 100644
+--- a/iOS/Article/ArticleViewController.swift
++++ b/iOS/Article/ArticleViewController.swift
+@@ -142,6 +142,7 @@ final class ArticleViewController: UIViewController {
+ 
+ 		articleExtractorButton.addTarget(self, action: #selector(toggleArticleExtractor(_:)), for: .touchUpInside)
+ 		let articleExtractorBarButtonItem = UIBarButtonItem(customView: articleExtractorButton)
++		configureVerticalBarBehavior(for: articleExtractorBarButtonItem)
+ 
+ 		if #available(iOS 26, *) {
+ 			toolbarItems?.insert(articleExtractorBarButtonItem, at: 5)
+@@ -214,6 +215,54 @@ final class ArticleViewController: UIViewController {
+ 		updateUI()
+ 	}
+ 
++	/// iPhone Duo: a custom-view bar item stays in a horizontal bar unless it prefers the vertical one. Reader View keeps
++	/// its view (and so its state and its accessibility label) and goes into the vertical bar wherever the window has one.
++	/// Where that bar is short (the turned cover) it can land in the bar's overflow, which cannot draw a custom view:
++	/// there it is a menu item with the same title, state and enabled state.
++	private func configureVerticalBarBehavior(for item: UIBarButtonItem) {
++		guard #available(iOS 27.1, *) else {
++			return
++		}
++		let overflowRepresentation = UIDeferredMenuElement.uncached { [weak self] completion in
++			guard let self else {
++				completion([])
++				return
++			}
++			completion([self.readerViewMenuAction()])
++		}
++		let update: (UITraitCollection) -> Void = { [weak item] traits in
++			let hasVerticalBar = traits.verticalBarEdge != .unspecified
++			item?.axisBehavior = hasVerticalBar ? .verticalPreferred : .automatic
++			item?.menuRepresentation = hasVerticalBar ? overflowRepresentation : nil
++		}
++		update(traitCollection)
++		registerForTraitChanges(UITraitCollection.systemTraitsAffectingVerticalBarEdge) { (controller: Self, _: UITraitCollection) in
++			update(controller.traitCollection)
++		}
++	}
++
++	/// Reader View as the vertical bar's overflow shows it: the button's title, state and enabled state.
++	private func readerViewMenuAction() -> UIAction {
++		let button = articleExtractorButton
++		let image: UIImage?
++		switch button.buttonState {
++		case .on:
++			image = Assets.Images.articleExtractorOn
++		case .error:
++			image = Assets.Images.articleExtractorError
++		case .animated, .off:
++			image = Assets.Images.articleExtractorOff
++		}
++		let action = UIAction(title: NSLocalizedString("Reader View", comment: "Reader View"), image: image) { [weak self] _ in
++			self?.toggleArticleExtractor(button)
++		}
++		action.state = button.buttonState == .on ? .on : .off
++		if !button.isEnabled || button.buttonState == .animated {
++			action.attributes = .disabled
++		}
++		return action
++	}
++
+ 	override func viewWillAppear(_ animated: Bool) {
+ 		let hideToolbars = AppDefaults.logicalArticleFullscreenEnabled
+ 		if hideToolbars {
+diff --git a/iOS/Article/WebViewController.swift b/iOS/Article/WebViewController.swift
+index a7977c2..2b4a987 100644
+--- a/iOS/Article/WebViewController.swift
++++ b/iOS/Article/WebViewController.swift
+@@ -84,6 +84,8 @@ final class WebViewController: UIViewController {
+ 		}
+ 	}
+ 	private var restoreWindowScrollY: Int?
++	/// iPhone Duo: whether the empty page was drawn for a window with a fold (its placeholder sits higher there).
++	private var isNoSelectionDrawnForFold = false
+ 	private var isArticleContentJavascriptEnabled = AppDefaults.isArticleContentJavascriptEnabled
+ 
+ 	override func viewDidLoad() {
+@@ -100,9 +102,16 @@ final class WebViewController: UIViewController {
+ 		configureTopShowBarsView()
+ 		configureBottomShowBarsView()
+ 
++		NotificationCenter.default.addObserver(self, selector: #selector(windowFoldDidChange(_:)), name: .windowFoldDidChange, object: nil)
++
+ 		loadWebView()
+ 	}
+ 
++	override func viewDidLayoutSubviews() {
++		super.viewDidLayoutSubviews()
++		redrawNoSelectionIfFoldChanged()
++	}
++
+ 	override func viewSafeAreaInsetsDidChange() {
+ 		super.viewSafeAreaInsetsDidChange()
+ 		if isFullScreenAvailable && AppDefaults.logicalArticleFullscreenEnabled {
+@@ -120,6 +129,18 @@ final class WebViewController: UIViewController {
+ 
+ 	// MARK: Notifications
+ 
++	@objc func windowFoldDidChange(_ notification: Notification) {
++		redrawNoSelectionIfFoldChanged()
++	}
++
++	/// iPhone Duo: the empty page's placeholder moves off the fold when the window gains a fold, and back when it loses it.
++	private func redrawNoSelectionIfFoldChanged() {
++		guard article == nil, view.window != nil, view.windowHasFold != isNoSelectionDrawnForFold else {
++			return
++		}
++		renderPage(webView)
++	}
++
+ 	@objc func handleSceneDidEnterBackground(_ notification: Notification) {
+ 		// The share sheet is a popover on iPad. Opening the article in another browser
+ 		// from it backgrounds NetNewsWire mid-presentation, orphaning the popover so it
+@@ -689,7 +710,13 @@ private extension WebViewController {
+ 		} else if let article = article {
+ 			rendering = ArticleRenderer.articleHTML(article: article, theme: theme)
+ 		} else {
+-			rendering = ArticleRenderer.noSelectionHTML(theme: theme)
++			var noSelection = ArticleRenderer.noSelectionHTML(theme: theme)
++			// iPhone Duo: held upright and folded, the middle of the pane is the fold; put "No selection" above it.
++			isNoSelectionDrawnForFold = view.windowHasFold
++			if isNoSelectionDrawnForFold {
++				noSelection.style += "\n.systemMessage { top: 25%; }\n"
++			}
++			rendering = noSelection
+ 		}
+ 
+ 		let html = ArticleRenderer.pageHTML(rendering, windowScrollY: windowScrollY)
+diff --git a/iOS/Duo/DuoFold.swift b/iOS/Duo/DuoFold.swift
+new file mode 100644
+index 0000000..dc894a6
+--- /dev/null
++++ b/iOS/Duo/DuoFold.swift
+@@ -0,0 +1,37 @@
++//
++//  DuoFold.swift
++//  NetNewsWire-iOS
++//
++//  iPhone Duo: what the window's fold and vertical bar are doing, read from the reserved regions
++//  and the trait collection (never from the device, its idiom or its orientation).
++//  Everything here is a no-op before iOS 27.1 and wherever the window has no fold.
++//
++
++import UIKit
++
++extension Notification.Name {
++
++	/// Posted by the root split view controller when its window gains or loses a fold,
++	/// or when a fold turns active or inactive (the iPhone Duo's hinge moved).
++	static let windowFoldDidChange = Notification.Name("WindowFoldDidChange")
++}
++
++extension UIView {
++
++	/// True where the window has a fold, active or not (the iPhone Duo's inner display).
++	/// Read from the window, since a pane beside the fold (a detail that starts where the fold ends) reports none.
++	var windowHasFold: Bool {
++		guard #available(iOS 27.1, *) else {
++			return false
++		}
++		return !(window ?? self).reservedRegions(kind: .division, options: .includeInactive).isEmpty
++	}
++
++	/// True while a fold that runs top to bottom is active: the iPhone Duo folded like a book. Read from the window.
++	var isBookFoldActive: Bool {
++		guard #available(iOS 27.1, *) else {
++			return false
++		}
++		return (window ?? self).reservedRegions(kind: .division).contains { $0.isActive && $0.frame.height > $0.frame.width }
++	}
++}
+diff --git a/iOS/Duo/FoldAwareSheets.swift b/iOS/Duo/FoldAwareSheets.swift
+new file mode 100644
+index 0000000..83c630f
+--- /dev/null
++++ b/iOS/Duo/FoldAwareSheets.swift
+@@ -0,0 +1,39 @@
++//
++//  FoldAwareSheets.swift
++//  NetNewsWire-iOS
++//
++//  iPhone Duo: the sheet rule. Folded like a book, the system puts a sheet on the leading half, over the list;
++//  Apple sends alerts and sheets to the trailing half there. Elsewhere sheets go where the system puts them.
++//
++
++import UIKit
++
++extension UIViewController {
++
++	/// The sheet rule for the iPhone Duo: a sheet sits on the trailing half while the book fold is active,
++	/// away from the list on the leading half, and where the system puts it everywhere else.
++	/// Call it before presenting, with the controller about to be presented.
++	func applyFoldAwareSheetPlacement(to presented: UIViewController) {
++		guard #available(iOS 27.1, *), let sheet = presented.sheetPresentationController else {
++			return
++		}
++		sheet.preferredPlacement = view.isBookFoldActive ? .trailing : .automatic
++	}
++
++	/// Moves the sheets already up (this controller's presented chain) to the side the fold calls for.
++	func updateFoldAwareSheetPlacement() {
++		guard #available(iOS 27.1, *) else {
++			return
++		}
++		let placement: UISheetPresentationController.Placement = view.isBookFoldActive ? .trailing : .automatic
++		var presented = presentedViewController
++		while let controller = presented {
++			if !controller.isBeingDismissed, let sheet = controller.sheetPresentationController, sheet.preferredPlacement != placement {
++				sheet.animateChanges {
++					sheet.preferredPlacement = placement
++				}
++			}
++			presented = controller.presentedViewController
++		}
++	}
++}
+diff --git a/iOS/Duo/VerticalBarReader.swift b/iOS/Duo/VerticalBarReader.swift
+new file mode 100644
+index 0000000..e47f94f
+--- /dev/null
++++ b/iOS/Duo/VerticalBarReader.swift
+@@ -0,0 +1,33 @@
++//
++//  VerticalBarReader.swift
++//  NetNewsWire-iOS
++//
++//  iPhone Duo: tells a SwiftUI view whether its bars are vertical (`toolbarVerticalEdge`, iOS 27.1),
++//  so a bar item can carry a symbol and a title there and stay as it was everywhere else.
++//
++
++import SwiftUI
++
++struct VerticalBarReader<Content: View>: View {
++
++	@ViewBuilder let content: (_ hasVerticalBar: Bool) -> Content
++
++	var body: some View {
++		if #available(iOS 27.1, *) {
++			VerticalBarEdgeReader(content: content)
++		} else {
++			content(false)
++		}
++	}
++}
++
++@available(iOS 27.1, *)
++private struct VerticalBarEdgeReader<Content: View>: View {
++
++	@Environment(\.toolbarVerticalEdge) private var verticalEdge
++	let content: (Bool) -> Content
++
++	var body: some View {
++		content(verticalEdge != nil)
++	}
++}
+diff --git a/iOS/Inspector/AccountInspectorViewController.swift b/iOS/Inspector/AccountInspectorViewController.swift
+index ef12eff..21e11cb 100644
+--- a/iOS/Inspector/AccountInspectorViewController.swift
++++ b/iOS/Inspector/AccountInspectorViewController.swift
+@@ -115,6 +115,7 @@ final class AccountInspectorViewController: UITableViewController {
+ 	@IBAction func openLimitationsAndSolutions(_ sender: Any) {
+ 		let vc = SFSafariViewController(url: CloudKitWebDocumentation.limitationsAndSolutionsURL)
+ 		vc.modalPresentationStyle = .pageSheet
++		applyFoldAwareSheetPlacement(to: vc)
+ 		present(vc, animated: true)
+ 	}
+ }
+diff --git a/iOS/RootSplitViewController.swift b/iOS/RootSplitViewController.swift
+index 52a425e..b8b67c6 100644
+--- a/iOS/RootSplitViewController.swift
++++ b/iOS/RootSplitViewController.swift
+@@ -26,6 +26,102 @@ final class RootSplitViewController: UISplitViewController {
+ 		coordinator.resetFocus()
+ 	}
+ 
++	// MARK: iPhone Duo
++
++	/// True while the window has a fold and the system, not the app, sizes the columns.
++	private(set) var isFoldSizingColumns = false
++	private var isBookFoldActive = false
++	private var appColumnWidths: ColumnWidths?
++
++	/// Narrowest the detail may be where the window has a fold, so the timeline tiles beside it
++	/// in the 669 pt upright inner display instead of leaving the detail alone.
++	private static let minimumSecondaryColumnWidthOnFoldingDisplay: CGFloat = 320
++
++	/// The widths the app sets (SceneCoordinator), kept while the fold sizes the columns.
++	private struct ColumnWidths {
++		let minimumPrimary: CGFloat
++		let maximumPrimary: CGFloat
++		let preferredPrimary: CGFloat
++		let minimumSupplementary: CGFloat
++		let maximumSupplementary: CGFloat
++		let preferredSupplementary: CGFloat
++		let minimumSecondary: CGFloat?
++	}
++
++	override func viewDidLoad() {
++		super.viewDidLoad()
++		if #available(iOS 27.1, *) {
++			// UIKit has no callback when the reserved regions change: look again whenever the hinge moves,
++			// and once more when the regions have had time to arrive (they come 0.1–0.3 s after a change).
++			view.addInteraction(UIHingeInteraction { [weak self] _, _ in
++				self?.view.setNeedsLayout()
++				DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) { [weak self] in
++					self?.view.setNeedsLayout()
++				}
++			})
++		}
++	}
++
++	override func viewWillLayoutSubviews() {
++		// Before super: the split resolves its columns and display mode in this pass.
++		updateColumnsForFold()
++		super.viewWillLayoutSubviews()
++	}
++
++	/// Where the window has a fold, set no column width, so the system puts the boundary on the fold,
++	/// and let the detail be narrow enough to tile beside the timeline held upright.
++	/// Without a fold, the app's own widths are back.
++	private func updateColumnsForFold() {
++		let hasFold = view.windowHasFold
++		let bookFold = view.isBookFoldActive
++		defer {
++			if hasFold != isFoldSizingColumns || bookFold != isBookFoldActive {
++				isFoldSizingColumns = hasFold
++				isBookFoldActive = bookFold
++				NotificationCenter.default.post(name: .windowFoldDidChange, object: self)
++				// Sheets already up move to the side the fold now calls for.
++				updateFoldAwareSheetPlacement()
++			}
++		}
++		guard hasFold != isFoldSizingColumns else {
++			return
++		}
++		if hasFold {
++			var minimumSecondary: CGFloat?
++			if #available(iOS 26, *) {
++				minimumSecondary = minimumSecondaryColumnWidth
++			}
++			appColumnWidths = ColumnWidths(minimumPrimary: minimumPrimaryColumnWidth,
++										   maximumPrimary: maximumPrimaryColumnWidth,
++										   preferredPrimary: preferredPrimaryColumnWidth,
++										   minimumSupplementary: minimumSupplementaryColumnWidth,
++										   maximumSupplementary: maximumSupplementaryColumnWidth,
++										   preferredSupplementary: preferredSupplementaryColumnWidth,
++										   minimumSecondary: minimumSecondary)
++			let automatic = UISplitViewController.automaticDimension
++			minimumPrimaryColumnWidth = automatic
++			maximumPrimaryColumnWidth = automatic
++			preferredPrimaryColumnWidth = automatic
++			minimumSupplementaryColumnWidth = automatic
++			maximumSupplementaryColumnWidth = automatic
++			preferredSupplementaryColumnWidth = automatic
++			if #available(iOS 26, *) {
++				minimumSecondaryColumnWidth = Self.minimumSecondaryColumnWidthOnFoldingDisplay
++			}
++		} else if let appColumnWidths {
++			minimumPrimaryColumnWidth = appColumnWidths.minimumPrimary
++			maximumPrimaryColumnWidth = appColumnWidths.maximumPrimary
++			preferredPrimaryColumnWidth = appColumnWidths.preferredPrimary
++			minimumSupplementaryColumnWidth = appColumnWidths.minimumSupplementary
++			maximumSupplementaryColumnWidth = appColumnWidths.maximumSupplementary
++			preferredSupplementaryColumnWidth = appColumnWidths.preferredSupplementary
++			if #available(iOS 26, *), let minimumSecondary = appColumnWidths.minimumSecondary {
++				minimumSecondaryColumnWidth = minimumSecondary
++			}
++			self.appColumnWidths = nil
++		}
++	}
++
+ 	/// Show a column for programmatic navigation.
+ 	/// Pass `bypassDisplayModeRestriction: true` for user-initiated navigation, so it can
+ 	/// reveal a column the display-mode suppression below would otherwise keep hidden.
+diff --git a/iOS/SceneCoordinator.swift b/iOS/SceneCoordinator.swift
+index 5ea8fbe..11fe341 100644
+--- a/iOS/SceneCoordinator.swift
++++ b/iOS/SceneCoordinator.swift
+@@ -832,6 +832,10 @@ struct SidebarItemNode: Hashable, Sendable {
+ 		guard !rootSplitViewController.isCollapsed, rootSplitViewController.displayMode != .secondaryOnly else {
+ 			return
+ 		}
++		// iPhone Duo: where the window has a fold the system sizes the columns; that width is not the person's.
++		guard !rootSplitViewController.isFoldSizingColumns else {
++			return
++		}
+ 		// The timeline view extends under the sidebar, so its bounds are wider than the column looks.
+ 		// <https://github.com/Ranchero-Software/NetNewsWire/issues/5401>
+ 		let width = mainTimelineViewController?.view.safeAreaLayoutGuide.layoutFrame.width ?? 0
+@@ -853,6 +857,10 @@ struct SidebarItemNode: Hashable, Sendable {
+ 		guard !rootSplitViewController.isCollapsed, sidebarIsVisible else {
+ 			return
+ 		}
++		// iPhone Duo: where the window has a fold the system sizes the columns; that width is not the person's.
++		guard !rootSplitViewController.isFoldSizingColumns else {
++			return
++		}
+ 		let width = mainFeedCollectionViewController?.view.safeAreaLayoutGuide.layoutFrame.width ?? 0
+ 		guard width > 0 else {
+ 			return
+@@ -1568,6 +1576,7 @@ struct SidebarItemNode: Hashable, Sendable {
+ 		settingsViewController.scrollToArticlesSection = scrollToArticlesSection
+ 		settingsNavController.modalPresentationStyle = .formSheet
+ 		settingsViewController.presentingParentController = rootSplitViewController
++		rootSplitViewController.applyFoldAwareSheetPlacement(to: settingsNavController)
+ 		rootSplitViewController.present(settingsNavController, animated: true)
+ 	}
+ 
+@@ -1577,6 +1586,7 @@ struct SidebarItemNode: Hashable, Sendable {
+ 			sheet.detents = [.medium(), .large()]
+ 			sheet.prefersGrabberVisible = true
+ 		}
++		rootSplitViewController.applyFoldAwareSheetPlacement(to: hostingController)
+ 		rootSplitViewController.present(hostingController, animated: true)
+ 	}
+ 
+@@ -1588,12 +1598,14 @@ struct SidebarItemNode: Hashable, Sendable {
+ 		accountInspectorNavController.preferredContentSize = UIViewController.formSheetSize
+ 		accountInspectorController.isModal = true
+ 		accountInspectorController.account = account
++		rootSplitViewController.applyFoldAwareSheetPlacement(to: accountInspectorNavController)
+ 		rootSplitViewController.present(accountInspectorNavController, animated: true)
+ 	}
+ 
+ 	func showNotificationInspector(for account: Account) {
+ 		let hostingController = UIHostingController(rootView: AccountNotificationInspectorView(account: account))
+ 		hostingController.modalPresentationStyle = .formSheet
++		rootSplitViewController.applyFoldAwareSheetPlacement(to: hostingController)
+ 		rootSplitViewController.present(hostingController, animated: true)
+ 	}
+ 
+@@ -1611,6 +1623,7 @@ struct SidebarItemNode: Hashable, Sendable {
+ 		feedInspectorNavController.modalPresentationStyle = .formSheet
+ 		feedInspectorNavController.preferredContentSize = FeedInspectorViewController.preferredContentSizeForFormSheetDisplay
+ 		feedInspectorController.feed = feed
++		rootSplitViewController.applyFoldAwareSheetPlacement(to: feedInspectorNavController)
+ 		rootSplitViewController.present(feedInspectorNavController, animated: true)
+ 	}
+ 
+@@ -1626,10 +1639,12 @@ struct SidebarItemNode: Hashable, Sendable {
+ 
+ 		// Presenting over an active nav-bar-hosted search bar crashes inside UIKit.
+ 		guard let mainTimelineViewController else {
++			rootSplitViewController.applyFoldAwareSheetPlacement(to: hostingController)
+ 			rootSplitViewController.present(hostingController, animated: true)
+ 			return
+ 		}
+ 		mainTimelineViewController.hideSearch {
++			self.rootSplitViewController.applyFoldAwareSheetPlacement(to: hostingController)
+ 			self.rootSplitViewController.present(hostingController, animated: true)
+ 		}
+ 	}
+@@ -1638,6 +1653,7 @@ struct SidebarItemNode: Hashable, Sendable {
+ 		let hostingController = UIHostingController(rootView: AddFolderView())
+ 		hostingController.modalPresentationStyle = .formSheet
+ 		hostingController.preferredContentSize = UIViewController.formSheetSize
++		mainFeedCollectionViewController.applyFoldAwareSheetPlacement(to: hostingController)
+ 		mainFeedCollectionViewController.present(hostingController, animated: true)
+ 	}
+ 
+diff --git a/iOS/Settings/SettingsViewController.swift b/iOS/Settings/SettingsViewController.swift
+index 5e0a353..67408fd 100644
+--- a/iOS/Settings/SettingsViewController.swift
++++ b/iOS/Settings/SettingsViewController.swift
+@@ -520,6 +520,7 @@ private extension SettingsViewController {
+ 		hostingController.modalPresentationStyle = .formSheet
+ 		hostingController.preferredContentSize = UIViewController.formSheetSize
+ 
++		presentingParentController?.applyFoldAwareSheetPlacement(to: hostingController)
+ 		presentingParentController?.present(hostingController, animated: true)
+ 	}
+ 
+@@ -579,6 +580,7 @@ private extension SettingsViewController {
+ 		let documentPicker = UIDocumentPickerViewController(forOpeningContentTypes: contentTypes, asCopy: true)
+ 		documentPicker.delegate = self
+ 		documentPicker.modalPresentationStyle = .formSheet
++		applyFoldAwareSheetPlacement(to: documentPicker)
+ 		self.present(documentPicker, animated: true)
+ 	}
+ 
+@@ -631,6 +633,7 @@ private extension SettingsViewController {
+ 
+ 		let docPicker = UIDocumentPickerViewController(forExporting: [tempFile])
+ 		docPicker.modalPresentationStyle = .formSheet
++		applyFoldAwareSheetPlacement(to: docPicker)
+ 		self.present(docPicker, animated: true)
+ 	}
+ 
+@@ -655,6 +658,7 @@ private extension SettingsViewController {
+ 	private func presentSafariViewController(for url: URL) {
+ 		let vc = SFSafariViewController(url: url)
+ 		vc.modalPresentationStyle = .pageSheet
++		applyFoldAwareSheetPlacement(to: vc)
+ 		present(vc, animated: true)
+ 	}
+ }
+diff --git a/iOS/UIKit Extensions/UIViewController+Extras.swift b/iOS/UIKit Extensions/UIViewController+Extras.swift
+index 09b9b23..8edefdb 100644
+--- a/iOS/UIKit Extensions/UIViewController+Extras.swift	
++++ b/iOS/UIKit Extensions/UIViewController+Extras.swift	
+@@ -43,6 +43,7 @@ private extension UIViewController {
+ 				let hostingController = UIHostingController(rootView: CredentialsAccountView(accountType: account.type, account: account, didAddAccount: nil))
+ 				hostingController.modalPresentationStyle = .formSheet
+ 				hostingController.preferredContentSize = UIViewController.formSheetSize
++				self?.applyFoldAwareSheetPlacement(to: hostingController)
+ 				self?.present(hostingController, animated: true)
+ 			}
+ 

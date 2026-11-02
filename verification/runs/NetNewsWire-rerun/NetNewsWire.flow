@@ -1,0 +1,12 @@
+# NetNewsWire on the iPhone Duo: the screens a person spends time in.
+# The launch arguments pin state restoration so every screen starts at the feeds list (the app restores the last
+# selected feed and article from user defaults at launch) and keep the split view's saved display mode at its default.
+BUNDLE=com.ranchero.NetNewsWire.iOS-DEBUG
+LAUNCH_ARGS='-selectedSidebarItem <dict/> -selectedArticle <dict/> -splitViewPreferredDisplayMode 2'
+SCREENS=(
+  "feeds=springboard:Don"
+  "timeline=springboard:Don;Daring Fireball"
+  "article=springboard:Don;Daring Fireball;cell:1"
+  "settings=springboard:Don;Settings"
+  "add-feed=springboard:Don;Add;Add Feed"
+)

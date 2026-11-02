@@ -1,9 +1,9 @@
 # Foldsmith evidence
 
 The captures, comparisons and primary material behind [Foldsmith](https://github.com/3nchiridion/foldsmith): measured
-layout patterns and hands-free migration for iPhone Duo, proven in every pose. The patterns, the detectors, the skill and
-the Claude Code plugin live there; this repository holds what they were measured and checked against, so that one stays
-small enough to install.
+layout patterns and hands-free migration for iPhone Duo, checked in every pose. The patterns, the detectors, the skill
+and the Claude Code plugin live there; this repository holds what they were measured and checked against, so that one
+stays small enough to install.
 
 Paths outside `raw/` and `verification/` named in these files (`patterns/`, `Sources/`, `scripts/`, `Tests/`,
 `EVAL.md`, `docs/`), and "this repository" in the run reports, mean the Foldsmith repository. Its scripts write here when
@@ -18,9 +18,10 @@ Inc. Foldsmith is independent and is not affiliated with, sponsored by, or endor
 | [`matrices/`](verification/matrices/) | the goldens: the pattern catalog captured in all seven poses, one folder per pattern (`split/`, `grid/`, `arrangement/`, `columns/`), each config's shot `<config>-<pose>.png` beside its frame record `.json`, and the composed pose matrix `<pattern>.png` (Foldsmith's `scripts/capture-catalog.sh`, `compose-matrix.py`); CI's G2 compares fresh captures with these |
 | [`oracle/`](verification/oracle/) | G4: each pattern beside Apple's app in the same pose. Settings and Safari captured on the simulator; Fitness, Podcasts and Accessibility Reader from tech talk 111463's frames, linked, not stored. One page per pattern |
 | [`accessibility/`](verification/accessibility/) | the catalog read through XCTest: `catalog/<pattern>-<config>-<pose>.json`, 17 configs × 7 poses, checked against the frame records |
-| [`runs/`](verification/runs/) | the three hands-free migrations, each with README, REPORT.md, audit.md, migration.json, the detectors before and after, and the patch with its licence |
-| [`runs/NetNewsWire/`](verification/runs/NetNewsWire/) | 2026-10-27, the first run: five screens verified in every pose. Patch MIT (Brent Simmons) |
-| [`runs/IceCubesApp/`](verification/runs/IceCubesApp/) | 2026-10-28, the first SwiftUI app: five logged-out screens verified. Patch AGPL-3.0, as IceCubesApp is; strangers' posts redacted |
+| [`runs/`](verification/runs/) | the hands-free migrations of three apps, NetNewsWire twice, each with README, REPORT.md, audit.md, migration.json, the detectors before and after, and the patch with its licence |
+| [`runs/NetNewsWire/`](verification/runs/NetNewsWire/) | 2026-10-27, the first run: five screens done, 19 cells verified and 16 fine as is; an independent review confirmed 9 regressions, none fixed. Patch MIT (Brent Simmons) |
+| [`runs/NetNewsWire-rerun/`](verification/runs/NetNewsWire-rerun/) | 2026-11-01, the second NetNewsWire run, with Foldsmith 0.8.0: 4 of 5 screens done (feeds left, its fix structural and only proposed), 17 cells verified, 13 fine as is, 5 left; 3 regressions confirmed by an independent review, none fixed; Foldsmith 0.8.1's checks on it. Patch MIT (Brent Simmons) |
+| [`runs/IceCubesApp/`](verification/runs/IceCubesApp/) | 2026-10-28, the first SwiftUI app: five logged-out screens done, 8 cells verified and 27 fine as is; logged in never run. Patch AGPL-3.0, as IceCubesApp is; strangers' posts redacted |
 | [`runs/Wikipedia/`](verification/runs/Wikipedia/) | 2026-10-28, UIKit and Objective-C with articles in a web view: 2 of 11 screens, 15 confirmed review items left |
 | [`ab/`](verification/ab/) | the blind A/B for G5, set aside on 2026-10-27: PROTOCOL.md, INSTRUCTIONS.md, RECRUITMENT.md, the frozen `flows/`, and `baseline/` (the three apps unmodified through those flows: shots, accessibility snapshots, detector findings) |
 
@@ -37,10 +38,11 @@ Inc. Foldsmith is independent and is not affiliated with, sponsored by, or endor
 
 ## License
 MIT (`LICENSE`) for everything Foldsmith wrote here, code and text. Microsoft sources under `raw/precedent/ms-source`
-keep their MIT license. Three patches change other projects and keep their licenses, whose texts are next to them:
+keep their MIT license. Four patches change other projects and keep their licenses, whose texts are next to them:
 `verification/runs/IceCubesApp/IceCubesApp.patch` (AGPL-3.0, as IceCubesApp is),
-`verification/runs/Wikipedia/Wikipedia.patch` (MIT, Wikimedia Foundation) and
-`verification/runs/NetNewsWire/NetNewsWire.patch` (MIT, Brent Simmons).
+`verification/runs/Wikipedia/Wikipedia.patch` (MIT, Wikimedia Foundation), and
+`verification/runs/NetNewsWire/NetNewsWire.patch` and `verification/runs/NetNewsWire-rerun/NetNewsWire.patch` (MIT,
+Brent Simmons).
 
 Screenshots under `raw/corpus/evidence/`, `raw/apple-apps/` (Apple's Safari and Settings; all but the project's own
 `_probe/`) and `verification/ab/baseline/` show other apps and the content those apps display. They are not covered by
